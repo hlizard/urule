@@ -5,13 +5,16 @@
     <artifactId>urule-parent</artifactId>
     <version>2.0.4</version>
   </parent>
+    <groupId>com.wj.urule</groupId>
   <artifactId>urule-console</artifactId>
   <version>2.1.5-SNAPSHOT</version>
   <dependencies>
   	<dependency>
-  		<groupId>com.bstek.urule</groupId>
+  		<groupId>com.wj.urule</groupId>
   		<artifactId>urule-core</artifactId>
   		<version>2.1.5-SNAPSHOT</version>
+        <scope>system</scope>
+        <systemPath>${project.basedir}/lib/urule-core-2.1.5-SNAPSHOT.jar</systemPath>
   	</dependency>
   	<dependency>
   		<groupId>org.apache.jackrabbit</groupId>
