@@ -122,6 +122,11 @@ public enum Op {
 		public String toString() {
 			return "不包含";
 		}
+	}, If{
+		@Override
+		public String toString() {
+			return "如果";
+		}
 	};
 	
 	public static Op parse(String op){
@@ -165,6 +170,8 @@ public enum Op {
 			return Contain;
 		}else if(op.equals("NotContain")){
 			return NotContain;
+		}else if(op.equals("If")){
+			return If;
 		}
 		throw new RuleException("Unsupport op "+op+"");
 	}

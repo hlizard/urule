@@ -100,7 +100,11 @@ urule.ComparisonOperator=function(menuCallFun){
 			label : "不包含",
 			name:"NotContain",
 			onClick : onClick
-		}]
+		}, {
+            label : "如果",
+            name:"If",
+            onClick : onClick
+        }]
 	});
 	this.container.click(function(e){
 		self.menu.show(e);
@@ -271,6 +275,14 @@ urule.ComparisonOperator.prototype.setOperator=function(operator){
 	case "NotContain":
 		this.operator="NotContain";
 		URule.setDomContent(this.container,"不包含");
+		if(this.inputType){
+			this.inputType.getContainer().remove();
+		}
+		this.inputType=new urule.InputType();
+		break;
+	case "If":
+		this.operator="If";
+		URule.setDomContent(this.container,"如果");
 		if(this.inputType){
 			this.inputType.getContainer().remove();
 		}
