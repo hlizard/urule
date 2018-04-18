@@ -158,6 +158,12 @@ public class Utils implements ApplicationContextAware{
 					return BigDecimal.valueOf(0);
 				}
 				str=str.trim();
+				if(str.endsWith("%")) {
+					str=str.substring(0, str.length()-1);
+					BigDecimal r = new BigDecimal(str).divide(BigDecimal.valueOf(100));
+					System.out.println(val + " -> " + r);
+					return r;
+				}
 				return new BigDecimal(str);
 			} else if (val instanceof Number) {
 				return new BigDecimal(val.toString());

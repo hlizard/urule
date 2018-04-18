@@ -61,6 +61,8 @@ public class DSLUtils {
 			return Op.Contain;
 		}else if(ctx.NotContain()!=null){
 			return Op.NotContain;
+		}else if(ctx.If()!=null){
+			return Op.If;
 		}
 		throw new RuleException("Operator ["+ctx+"] is invalid.");
 	}

@@ -16,18 +16,24 @@ export default class Cell{
         let xml="<card-cell type=\""+this.type+"\" row=\""+this.row.getRowNumber()+"\" col=\""+this.col.getColNumber()+"\"";
         if(this.type==='attribute'){
             if(!this.variable){
-                throw "请先选择属性";
-            }
-            if(this.row.scoreCardTable.weightSupport){
+                //throw "请先选择属性";
                 if(!this.weight){
-                    throw "请先定义["+this.variable.label+"]属性的权重值";
+                    throw "请先定义权重值";
                 }else{
                     xml+=" weight=\""+this.weight+"\"";
                 }
+            }else{
+                if(this.row.scoreCardTable.weightSupport){
+                    if(!this.weight){
+                        throw "请先定义["+this.variable.label+"]属性的权重值";
+                    }else{
+                        xml+=" weight=\""+this.weight+"\"";
+                    }
+                }
+                xml+=" var=\""+this.variable.name+"\"";
+                xml+=" var-label=\""+this.variable.label+"\"";
+                xml+=" datatype=\""+this.variable.type+"\">";
             }
-            xml+=" var=\""+this.variable.name+"\"";
-            xml+=" var-label=\""+this.variable.label+"\"";
-            xml+=" datatype=\""+this.variable.type+"\">";
         }else if(this.type==='condition'){
             xml+=">";
             if(!this.cellCondition){
