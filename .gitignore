@@ -3,3 +3,6 @@
 urule-console/target/
 urule-core/target/
 urule-springboot/target/
+
+/urule-console-js/node_modules/*
+/urule-console-js/bower_components/*

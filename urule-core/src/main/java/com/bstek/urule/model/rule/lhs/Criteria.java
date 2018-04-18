@@ -51,9 +51,12 @@ public class Criteria extends BaseCriterion implements BaseCriteria{
 			VariableLeftPart varPart=(VariableLeftPart)leftPart;
 			datatype=varPart.getDatatype();
 			if(varPart.getVariableName()==null){
-				throw new RuleException("Criteria left[variableName] can not be null.");
+				//throw new RuleException("Criteria left[variableName] can not be null.");
+				//当使用“如果”操作符时可以忽略左侧操作数
+				leftValue = null;
+			}else {
+				leftValue = Utils.getObjectProperty(obj, varPart.getVariableName());
 			}
-			leftValue=Utils.getObjectProperty(obj, varPart.getVariableName());
 		}else{
 			if(leftPart instanceof MethodLeftPart){
 				MethodLeftPart methodPart=(MethodLeftPart)leftPart;

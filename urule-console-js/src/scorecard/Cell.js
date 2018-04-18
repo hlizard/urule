@@ -17,11 +17,15 @@ export default class Cell{
         if(this.type==='attribute'){
             if(!this.variable){
                 //throw "请先选择属性";
-                if(!this.weight){
-                    throw "请先定义权重值";
-                }else{
-                    xml+=" weight=\""+this.weight+"\"";
+                //当使用“如果”操作符时可以忽略左侧操作数
+                if(this.row.scoreCardTable.weightSupport){
+                    if(!this.weight){
+                        throw "请先定义权重值";
+                    }else{
+                        xml+=" weight=\""+this.weight+"\"";
+                    }
                 }
+                xml+=">";
             }else{
                 if(this.row.scoreCardTable.weightSupport){
                     if(!this.weight){
