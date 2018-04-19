@@ -254,4 +254,5 @@ op
 	| NotEqualsIgnoreCase
 	| Contain
 	| NotContain
+	| If
 ;	  

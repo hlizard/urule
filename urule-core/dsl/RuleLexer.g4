@@ -69,6 +69,8 @@ EqualsIgnoreCase : 'EqualsIgnoreCase'|'\u5ffd\u7565\u5927\u5c0f\u5199\u7b49\u4e8
 
 NotEqualsIgnoreCase : 'NotEqualsIgnoreCase'|'\u5ffd\u7565\u5927\u5c0f\u5199\u4e0d\u7b49\u4e8e';
 
+If : 'If'|'\u5982\u679c';
+
 ARITH
 :
 	'+'

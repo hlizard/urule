@@ -1,4 +1,4 @@
-// Generated from RuleParser.g4 by ANTLR 4.5.3
+// Generated from E:/MyCode/urule/urule-core/dsl\RuleParser.g4 by ANTLR 4.5.3
 package com.bstek.urule.dsl;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
