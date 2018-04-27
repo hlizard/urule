@@ -164,15 +164,25 @@ public class Utils implements ApplicationContextAware{
 					System.out.println(val + " -> " + r);
 					return r;
 				}
+				//遇到计算结果为无穷值时转换整型的最大/最小值，避免报错
+				if(Double.NEGATIVE_INFINITY == Double.valueOf(str))
+					return BigDecimal.valueOf(Integer.MIN_VALUE);
+				else if(Double.POSITIVE_INFINITY == Double.valueOf(str))
+					return BigDecimal.valueOf(Integer.MAX_VALUE);
 				return new BigDecimal(str);
 			} else if (val instanceof Number) {
+				//遇到计算结果为无穷值时转换整型的最大/最小值，避免报错
+				if(Double.NEGATIVE_INFINITY == Double.valueOf(val.toString()))
+					return BigDecimal.valueOf(Integer.MIN_VALUE);
+				else if(Double.POSITIVE_INFINITY == Double.valueOf(val.toString()))
+					return BigDecimal.valueOf(Integer.MAX_VALUE);
 				return new BigDecimal(val.toString());
 			} else if (val instanceof Character) {
 				int i = ((Character) val).charValue();
 				return new BigDecimal(i);
 			}			
 		}catch(Exception ex){
-			throw new NumberFormatException("Can not convert "+val+" to number.");
+			throw new NumberFormatException("Can not convert "+val+"("+val.getClass().getName()+") to number.");
 		}
         
         throw new IllegalArgumentException(val.getClass().getName()+" can not to BigDecimal.");
