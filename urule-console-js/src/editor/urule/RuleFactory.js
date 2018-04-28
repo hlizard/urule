@@ -18,7 +18,7 @@ import {MsgBox} from 'flowdesigner';
 							'<button id="saveButton" type="button" class="btn btn-default navbar-btn" ><i class="icon-save"></i> 保存</button>' + 
 							'<button id="saveButtonNewVersion" type="button" class="btn btn-default navbar-btn" ><i class="icon-save"></i> 保存新版本</button>' +
 						'</div>';
-		var toolbarHtml=`<nav class="navbar navbar-default" style="margin: 5px">
+		var toolbarHtml=`<nav class="navbar navbar-default" style="margin: 5px;position: fixed;">
         	<div style="margin-left:5px;margin-top:0px;margin-bottom: 0px">
 	            <div>
 	                <button id="addRuleButton" type="button" class="btn btn-default btn-sm navbar-btn"><i class="glyphicon glyphicon-plus-sign"></i> 添加规则</button>

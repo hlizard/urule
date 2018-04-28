@@ -64,6 +64,7 @@ export default class ScoreCardTable{
 
     init(data){
         this.data=data || {};
+        console.log(data);
         if(this.data.weightSupport){
             this.weightSupport=true;
             this.weightSupportOption.prop("checked",true);

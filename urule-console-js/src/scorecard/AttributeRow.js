@@ -86,6 +86,7 @@ export default class AttributeRow extends Row{
             rowSpan=parseInt(rowSpan)+1;
         }
         this.attributeCell.td.prop("rowspan",rowSpan);
+        this.attributeCell.td.prop("title","行号:"+this.getRowNumber());    //显示行号，方便核对
         if(this.conditionRows.length>0){
             this.conditionRows[this.conditionRows.length-1].tr.after(newConditionRow.tr);
         }else{
