@@ -86,7 +86,7 @@ export default class AttributeRow extends Row{
             rowSpan=parseInt(rowSpan)+1;
         }
         this.attributeCell.td.prop("rowspan",rowSpan);
-        this.attributeCell.td.prop("title","ÐÐºÅ:"+this.getRowNumber());    //ÏÔÊ¾ÐÐºÅ£¬·½±ãºË¶Ô
+        this.attributeCell.td.prop("title","è¡Œå·:"+this.getRowNumber());    //æ˜¾ç¤ºè¡Œå·ï¼Œæ–¹ä¾¿æ ¸å¯¹
         if(this.conditionRows.length>0){
             this.conditionRows[this.conditionRows.length-1].tr.after(newConditionRow.tr);
         }else{

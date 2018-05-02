@@ -75,10 +75,13 @@ urule.Connection.prototype.initCondition=function(joinType){
 	}else{
 		this.condition=new urule.Condition(this.conditionContainer);
 	}
-	var del=$(`<i class="glyphicon glyphicon-trash" style="color: #019dff;cursor: pointer;font-size: 9pt;padding-left:5px"></i>`);
+	var del=$(`<i class="glyphicon glyphicon-trash" style="color: #019dff;cursor: pointer;font-size: 9pt;margin-left:55px"></i>`);
 	var self=this;
 	del.click(function(){
-		self.parentJoin.removeConnection(self);
+        bootbox.confirm("真的要删除？",function (result) {
+            if(!result)return;
+		    self.parentJoin.removeConnection(self);
+        });
 	});
 	this.conditionContainer.append(del);
 	this.context.getCanvas().append(this.conditionContainer);
