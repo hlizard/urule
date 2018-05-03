@@ -17,17 +17,41 @@ package com.bstek.urule.runtime.assertor;
 
 import com.bstek.urule.model.library.Datatype;
 import com.bstek.urule.model.rule.Op;
+
+import java.net.URL;
+
 import org.apache.commons.lang.StringUtils;
 
-import javax.script.ScriptEngine;
+/*import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+import javax.script.ScriptException;*/
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.JavaScriptException;
+import org.mozilla.javascript.tools.shell.Global;
+import org.mozilla.javascript.tools.shell.Main;
 
 /**
  * @author Jacky.gao
  * @since 2015年1月6日
  */
 public class IfAssertor implements Assertor {
+	
+	static Context cx;
+	static Global scope;
+	static URL  dir;
+	static {
+		init();	//有时无用
+	}
+	
+	static void init() {
+        cx = Context.enter();
+        scope = new Global(cx);
+        cx.setOptimizationLevel(-1);
+        cx.setLanguageVersion(Context.VERSION_1_7);
+        dir = IfAssertor.class.getResource("/");
+        Main.processFile(cx, scope, dir + "envjs\\env.rhino.js");
+        Main.processFile(cx, scope, dir + "envjs\\jquery.js");
+	}
 
 	public boolean eval(Object left, Object right,Datatype datatype) {
 		//忽略左侧运算数
@@ -35,12 +59,21 @@ public class IfAssertor implements Assertor {
 		if(StringUtils.isBlank(tj)) {
 			return true;
 		}
-		ScriptEngineManager factory = new ScriptEngineManager();
+/*		ScriptEngineManager factory = new ScriptEngineManager();
 		ScriptEngine engine = factory.getEngineByName("JavaScript");
 		Object o = null;
 		try {
 			o = engine.eval(tj);
 		} catch (ScriptException e) {
+			//throw new Exception("", e);
+			System.err.println("布尔表达式\"" + tj + "\"计算出错:" + e.getMessage());
+			e.printStackTrace();
+		}*/
+		Object o = null;
+		try {
+			init();	//每次都得调用，避免java.lang.RuntimeException: No Context associated with current Thread
+			o = cx.evaluateString(scope, tj, "js", 1, null);
+		} catch (JavaScriptException e) {
 			//throw new Exception("", e);
 			System.err.println("布尔表达式\"" + tj + "\"计算出错:" + e.getMessage());
 			e.printStackTrace();
