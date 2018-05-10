@@ -12,6 +12,7 @@ export default class ConditionCell extends Cell{
         const _this=this;
         const container=$(`<div></div>`);
         this.td.append(container);
+        this.td.prop("title","行号:"+this.row.rowData.rowNumber);    //显示行号，方便核对
         const conditionContainer=$('<span><span style="color:#999">无</span></span>');
         container.append(conditionContainer);
         const configCondition=$(`<span class="attribute-operation" style="color:#3c763d;margin-left: 5px"><i class="glyphicon glyphicon-cog" style="cursor: pointer" title="配置条件"></i></span>`);

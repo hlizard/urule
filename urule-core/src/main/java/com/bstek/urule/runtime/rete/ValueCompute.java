@@ -96,7 +96,36 @@ public class ValueCompute {
 			}
 			arithmetic=rightValue.getArithmetic();
 		}
-		return context.parseExpression(expr.toString());
+		System.out.println("expr:" + expr);
+		Object result = null;
+		try {
+			result = context.parseExpression(expr.toString());
+		} catch(NumberFormatException nfe) {
+			if(nfe.getMessage().startsWith("Can not convert ") && nfe.getMessage().endsWith(" to number.")) {
+				String[] operArr = expr.toString().split("\\+");
+				StringBuilder sb = new StringBuilder();
+				for(int i = 0; i<operArr.length; i++) {
+					String oper = operArr[i];
+					
+					if(oper.trim().startsWith("\"")) {
+						sb.append(oper);
+					} else {
+						sb.append("\"");
+						sb.append(oper);
+					}
+					if(!oper.trim().endsWith("\"")) {
+						sb.append("\"");
+					}
+					
+					if(i != operArr.length - 1) {
+						sb.append(" + ");
+					}
+				}
+				System.out.println("=> expr:" + sb);
+				result = context.parseExpression(sb.toString());
+			}
+		}
+		return result;
 	}
 	
 	private void addToExpr(StringBuffer expr,Object obj){

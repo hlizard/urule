@@ -48,9 +48,9 @@ public class IfAssertor implements Assertor {
         scope = new Global(cx);
         cx.setOptimizationLevel(-1);
         cx.setLanguageVersion(Context.VERSION_1_7);
-        dir = IfAssertor.class.getResource("/");
-        Main.processFile(cx, scope, dir + "envjs\\env.rhino.js");
-        Main.processFile(cx, scope, dir + "envjs\\jquery.js");
+        dir = IfAssertor.class.getResource("/");	//TODO:当前部署时需自行部署envjs到classes目录下
+        Main.processFile(cx, scope, dir + "envjs/env.rhino.js");
+        Main.processFile(cx, scope, dir + "envjs/jquery.js");
 	}
 
 	public boolean eval(Object left, Object right,Datatype datatype) {
