@@ -19,7 +19,7 @@ rem call cnpm install webpack@1.13.3
 call cnpm install webpack-cleanup-plugin@0.2.0
 
 
-rem call cnpm install -g webpack@1.13.3
+call cnpm install -g webpack@1.13.3
 
 
 
