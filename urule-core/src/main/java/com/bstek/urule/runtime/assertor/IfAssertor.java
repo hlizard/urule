@@ -36,21 +36,26 @@ import org.mozilla.javascript.tools.shell.Main;
  */
 public class IfAssertor implements Assertor {
 	
-	static Context cx;
-	static Global scope;
+	private Context cx;
+	private Global scope;
 	static URL  dir;
 	static {
-		init();	//有时无用
-	}
-	
-	static void init() {
-        cx = Context.enter();
-        scope = new Global(cx);
-        cx.setOptimizationLevel(-1);
-        cx.setLanguageVersion(Context.VERSION_1_7);
         dir = IfAssertor.class.getResource("/");	//TODO:当前部署时需自行部署envjs到classes目录下
-        Main.processFile(cx, scope, dir + "envjs/env.rhino.js");
-        Main.processFile(cx, scope, dir + "envjs/jquery.js");
+	}
+	private static ThreadLocal<Context> jscontextHolder = new ThreadLocal<Context>();
+	
+	private void init() {
+		cx = jscontextHolder.get();
+		if(cx == null) {
+			System.out.println("new cx!");
+	        cx = Context.enter();
+	        scope = new Global(cx);
+	        cx.setOptimizationLevel(-1);
+	        cx.setLanguageVersion(Context.VERSION_1_7);
+	        Main.processFile(cx, scope, dir + "envjs/env.rhino.js");
+	        Main.processFile(cx, scope, dir + "envjs/jquery.js");
+	        jscontextHolder.set(cx);
+		}
 	}
 
 	public boolean eval(Object left, Object right,Datatype datatype) {
@@ -75,12 +80,12 @@ public class IfAssertor implements Assertor {
 			o = cx.evaluateString(scope, tj, "js", 1, null);
 		} catch (JavaScriptException e) {
 			//throw new Exception("", e);
-			System.err.println("布尔表达式\"" + tj + "\"计算出错:" + e.getMessage());
+			System.err.println("布尔表达式(js表达式)\"" + tj + "\"计算出错:" + e.getMessage());
 			e.printStackTrace();
 		}
 		Boolean b = Boolean.parseBoolean(o.toString());
 
-		System.out.println("布尔表达式\"" + tj + "\"计算结果:" + b);
+		System.out.println("布尔表达式(js表达式)\"" + tj + "\"计算结果:" + b);
 		return b;
 	}
 

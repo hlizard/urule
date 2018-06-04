@@ -96,7 +96,7 @@ public class ValueCompute {
 			}
 			arithmetic=rightValue.getArithmetic();
 		}
-		System.out.println("expr:" + expr);
+		//System.out.println("expr:" + expr);
 		Object result = null;
 		try {
 			result = context.parseExpression(expr.toString());

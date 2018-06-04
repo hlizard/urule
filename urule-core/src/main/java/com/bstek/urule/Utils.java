@@ -161,7 +161,7 @@ public class Utils implements ApplicationContextAware{
 				if(str.endsWith("%")) {
 					str=str.substring(0, str.length()-1);
 					BigDecimal r = new BigDecimal(str).divide(BigDecimal.valueOf(100));
-					System.out.println(val + " -> " + r);
+					//System.out.println(val + " -> " + r);
 					return r;
 				}
 				//遇到计算结果为无穷值时转换整型的最大/最小值，避免报错
