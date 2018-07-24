@@ -57,9 +57,9 @@ In : 'In'|'\u5728\u96c6\u5408\u4e2d';
 
 NotIn : 'NotIn'|'\u4e0d\u5728\u96c6\u5408\u4e2d';
 
-Match : 'Match'|'\u5339\u914d';
+Match : 'Match'|'\u5339\u914d\u6b63\u5219\u8868\u8fbe\u5f0f';
 
-NotMatch : 'NotMatch'|'\u4e0d\u5339\u914d';
+NotMatch : 'NotMatch'|'\u4e0d\u5339\u914d\u6b63\u5219\u8868\u8fbe\u5f0f';
 
 Contain : 'Contain'|'\u5305\u542b';
 
@@ -70,6 +70,10 @@ EqualsIgnoreCase : 'EqualsIgnoreCase'|'\u5ffd\u7565\u5927\u5c0f\u5199\u7b49\u4e8
 NotEqualsIgnoreCase : 'NotEqualsIgnoreCase'|'\u5ffd\u7565\u5927\u5c0f\u5199\u4e0d\u7b49\u4e8e';
 
 If : 'If'|'\u5982\u679c';
+
+CNMatch : 'CNMatch'|'\u5339\u914d';
+
+NotCNMatch : 'NotCNMatch'|'\u4e0d\u5339\u914d';
 
 ARITH
 :

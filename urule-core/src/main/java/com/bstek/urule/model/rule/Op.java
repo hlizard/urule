@@ -105,12 +105,12 @@ public enum Op {
 	}, Match{
 		@Override
 		public String toString() {
-			return "匹配";
+			return "匹配正则表达式";
 		}
 	}, NotMatch{
 		@Override
 		public String toString() {
-			return "不匹配";
+			return "不匹配正则表达式";
 		}
 	}, Contain{
 		@Override
@@ -126,6 +126,16 @@ public enum Op {
 		@Override
 		public String toString() {
 			return "如果";
+		}
+	}, CNMatch{
+		@Override
+		public String toString() {
+			return "匹配";
+		}
+	}, NotCNMatch{
+		@Override
+		public String toString() {
+			return "不匹配";
 		}
 	};
 	
@@ -172,6 +182,10 @@ public enum Op {
 			return NotContain;
 		}else if(op.equals("If")){
 			return If;
+		}else if(op.equals("CNMatch")){
+			return CNMatch;
+		}else if(op.equals("NotCNMatch")){
+			return NotCNMatch;
 		}
 		throw new RuleException("Unsupport op "+op+"");
 	}

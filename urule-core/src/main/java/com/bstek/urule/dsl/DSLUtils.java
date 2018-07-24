@@ -63,6 +63,10 @@ public class DSLUtils {
 			return Op.NotContain;
 		}else if(ctx.If()!=null){
 			return Op.If;
+		}else if(ctx.CNMatch()!=null){
+			return Op.CNMatch;
+		}else if(ctx.NotCNMatch()!=null){
+			return Op.NotCNMatch;
 		}
 		throw new RuleException("Operator ["+ctx+"] is invalid.");
 	}

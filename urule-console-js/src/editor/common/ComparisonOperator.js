@@ -104,6 +104,14 @@ urule.ComparisonOperator=function(menuCallFun){
             label : "如果",
             name:"If",
             onClick : onClick
+        }, {
+            label : "匹配",
+            name:"CNMatch",
+            onClick : onClick
+        }, {
+            label : "不匹配",
+            name:"NotCNMatch",
+            onClick : onClick
         }]
 	});
 	this.container.click(function(e){
@@ -283,6 +291,22 @@ urule.ComparisonOperator.prototype.setOperator=function(operator){
 	case "If":
 		this.operator="If";
 		URule.setDomContent(this.container,"如果");
+		if(this.inputType){
+			this.inputType.getContainer().remove();
+		}
+		this.inputType=new urule.InputType();
+		break;
+	case "CNMatch":
+		this.operator="CNMatch";
+		URule.setDomContent(this.container,"匹配");
+		if(this.inputType){
+			this.inputType.getContainer().remove();
+		}
+		this.inputType=new urule.InputType();
+		break;
+	case "NotCNMatch":
+		this.operator="NotCNMatch";
+		URule.setDomContent(this.container,"不匹配");
 		if(this.inputType){
 			this.inputType.getContainer().remove();
 		}

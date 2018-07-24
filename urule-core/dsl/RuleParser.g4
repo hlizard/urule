@@ -255,4 +255,6 @@ op
 	| Contain
 	| NotContain
 	| If
+	| CNMatch
+	| NotCNMatch
 ;	  
