@@ -104,6 +104,17 @@ public class Utils implements ApplicationContextAware{
 		try {
 			BeanUtils.setProperty(object, property, value);
 		} catch (Exception e) {
+			if("No value specified for 'BigDecimal'".equals(e.getMessage())) {
+				try {
+					System.out.println("警告：No value specified for 'BigDecimal, set to BigDecimal.ZERO！");
+					BeanUtils.setProperty(object, property, BigDecimal.ZERO);
+					return;
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					throw new RuleException(e1);
+				}
+			}
 			throw new RuleException(e);
 		}
 	}

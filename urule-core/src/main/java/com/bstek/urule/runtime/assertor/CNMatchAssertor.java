@@ -76,8 +76,8 @@ public class CNMatchAssertor implements Assertor {
 		}
 		if(tj.startsWith("javascript:")){
 			tj = tj.substring(11);
-			if(left == null){
-				tj = "var x=null;\n"+tj;
+			if(StringUtils.isBlank(left)){
+				tj = "var x=undefined;\n"+tj;
 			} else {
 				tj = "var x='"+left+"';\n"+tj;
 			}
@@ -86,6 +86,9 @@ public class CNMatchAssertor implements Assertor {
 			if(tj.equals(left)){
 				return true;
 			} else {
+				if(StringUtils.isBlank(left)) {
+					left = "undefined";
+				}
 				tj = tj.replaceAll("\\s*", "");	//替换所有空白
 				tj = tj.replace("≧", ">=");
 				tj = tj.replace("≦", "<=");
@@ -97,6 +100,7 @@ public class CNMatchAssertor implements Assertor {
 				tj = tj.replace("×", "*");
 				tj = tj.replace("（", "(");
 				tj = tj.replace("）", ")");
+				tj = tj.replace("›", ">");
 				//if(tj.indexOf('，') > 0 || tj.indexOf(',') > 0 || tj.indexOf('；') > 0 || tj.indexOf(';') > 0){
 				{
 					String spliter = ",|，|;|；";
@@ -107,17 +111,17 @@ public class CNMatchAssertor implements Assertor {
 						spliter+="|-";
 					}
 					String[] andParts = tj.split(spliter);
-					Map<String, String> fhdict = new Hashtable<String, String>();
-					fhdict.put("大于等于", ">=");
-					fhdict.put("大于或等于", ">=");
-					fhdict.put("小于等于", "<=");
-					fhdict.put("小于或等于", "<=");
-					fhdict.put("大于", ">");
-					fhdict.put("等于", "==");
-					fhdict.put("小于", "<");
-					fhdict.put("不等于", "!=");
-					fhdict.put("不大于", "<=");
-					fhdict.put("大小于", ">=");
+					List<String> fhlist = new ArrayList<String>(); Map<String, String> fhdict = new Hashtable<String, String>();
+					fhlist.add("大于等于");			fhdict.put(fhlist.get(fhlist.size()-1), ">=");
+					fhlist.add("大于或等于");		fhdict.put(fhlist.get(fhlist.size()-1), ">=");
+					fhlist.add("小于等于");			fhdict.put(fhlist.get(fhlist.size()-1), "<=");
+					fhlist.add("小于或等于");		fhdict.put(fhlist.get(fhlist.size()-1), "<=");
+					fhlist.add("大于");				fhdict.put(fhlist.get(fhlist.size()-1), ">");
+					fhlist.add("等于");				fhdict.put(fhlist.get(fhlist.size()-1), "==");
+					fhlist.add("小于");				fhdict.put(fhlist.get(fhlist.size()-1), "<");
+					fhlist.add("不等于");			fhdict.put(fhlist.get(fhlist.size()-1), "!=");
+					fhlist.add("不大于");			fhdict.put(fhlist.get(fhlist.size()-1), "<=");
+					fhlist.add("大小于");			fhdict.put(fhlist.get(fhlist.size()-1), ">=");
 
 					String finddw = null;
 					Map<String, String> dwdict = new Hashtable<String, String>();
@@ -125,7 +129,7 @@ public class CNMatchAssertor implements Assertor {
 					dwdict.put("%", "%");
 					for(int i = 0 ; i<andParts.length; i++){
 						//翻译中文比较运算
-						for (String key: fhdict.keySet()){
+						for (String key: fhlist){
 							if(andParts[i].startsWith(key)){
 								andParts[i] = fhdict.get(key)+andParts[i].substring(key.length());
 							}
@@ -147,6 +151,8 @@ public class CNMatchAssertor implements Assertor {
 						for(int i = 0 ; i<andParts.length; i++){
 							if(andParts[i].indexOf(finddw)<0){
 								andParts[i] = andParts[i] + dwdict.get(finddw);	//TODO:插入到数字后面
+							} else {
+								andParts[i] = andParts[i].replace(finddw, dwdict.get(finddw));
 							}
 						}
 					}
@@ -163,7 +169,7 @@ public class CNMatchAssertor implements Assertor {
 					    StringBuilder sb = new StringBuilder();
                         for(int i = 0 ; i<andParts.length; i++){
                         	if(andParts[i].indexOf('、')>0) {
-                        		//copy from line 183
+                        		//copy from line 235
     							String[] orParts = andParts[i].split("、");
     							for(int j=0;j<orParts.length;j++){
     								if(j==0){
@@ -176,12 +182,15 @@ public class CNMatchAssertor implements Assertor {
     										break;
     									}
     								}
-    								if(!hasNum) {
+    								if(!hasNum && !"undefined".equals(left)) {
     									sb.append('\'');
     								}
     								sb.append(left);
+    								if(!hasNum && !"undefined".equals(left)) {
+    									sb.append('\'');
+    								}
     								if(!hasNum) {
-    									sb.append("\'==\'");
+    									sb.append("==\'");
     								}
     								if(Character.isDigit(orParts[j].charAt(0))){
     									if(orParts[j].indexOf("以下")>0 || orParts[j].indexOf("以内")>0){
@@ -244,12 +253,15 @@ public class CNMatchAssertor implements Assertor {
 										break;
 									}
 								}
-								if(!hasNum) {
+								if(!hasNum && !"undefined".equals(left)) {
 									sb.append('\'');
 								}
 								sb.append(left);
+								if(!hasNum && !"undefined".equals(left)) {
+									sb.append('\'');
+								}
 								if(!hasNum) {
-									sb.append("\'==\'");
+									sb.append("==\'");
 								}
 								if(Character.isDigit(orParts[j].charAt(0))){
 									if(orParts[j].indexOf("以下")>0 || orParts[j].indexOf("以内")>0){
@@ -301,7 +313,7 @@ public class CNMatchAssertor implements Assertor {
 		try {
 			init();	//每次都得调用，避免java.lang.RuntimeException: No Context associated with current Thread
 			o = cx.evaluateString(scope, tj, "js", 1, null);
-		} catch (JavaScriptException e) {
+		} catch (Exception e) {
 			//throw new Exception("", e);
 			System.err.println("表达式\"" + right + "\" => 布尔表达式(js表达式)\"" + tj + "\"计算出错:" + e.getMessage());
 			e.printStackTrace();
@@ -326,9 +338,9 @@ public class CNMatchAssertor implements Assertor {
 			}
 		}
 		if(indexOfNumEnd<andPart.length() && andPart.charAt(indexOfNumEnd) == '%'){
-String numStr = andPart.substring(numBegin, indexOfNumEnd);
+			String numStr = andPart.substring(numBegin, indexOfNumEnd);
 			BigDecimal num = BigDecimal.valueOf(Double.valueOf(numStr)).divide(BigDecimal.valueOf(100));
-			sb.append(andPart.substring(0, numBegin+1));
+			sb.append(andPart.substring(0, numBegin));
 			sb.append(num);
 		} else {
 			sb.append(andPart.substring(0, indexOfNumEnd));
