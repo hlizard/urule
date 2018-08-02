@@ -54,7 +54,18 @@ function slave(state={},action) {
         case ACTIONS.DEL_SLAVE:
             var rowIndex=action.rowIndex;
             var newData=Object.assign({},state.data);
-            newData.variables.splice(rowIndex,1);
+            if(rowIndex < 0){   //删除所有字段
+                //for(rowIndex=0;rowIndex<10000;rowIndex++){    //不行，需点多次才能清完
+                //    try{
+                //        newData.variables.splice(rowIndex,1);
+                //    } catch (err){
+                //        break;
+                //    }
+                //}
+                newData.variables = [];
+            } else {
+                newData.variables.splice(rowIndex,1);
+            }
             return Object.assign({},state.prototype,{data:newData});
         case ACTIONS.ADD_SLAVE:
             var newData=Object.assign({},state.data);

@@ -640,6 +640,7 @@ public class RepositoryServiceImpl extends BaseRepositoryService implements Repo
 
 	@Override
 	public void saveFile(String path, String content,boolean newVersion,String versionComment,User user) throws Exception{
+		System.out.println("saveFile:"+path+", "+content+", "+newVersion+", "+versionComment+", "+user);
 		path=Utils.decodeURL(path); 
 		if(path.indexOf(RES_PACKGE_FILE)>-1){
 			if(!permissionService.projectPackageHasWritePermission(path)){

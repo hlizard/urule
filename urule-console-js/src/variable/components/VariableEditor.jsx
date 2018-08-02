@@ -129,6 +129,7 @@ class VariableEditor extends Component{
                         <div style={{margin:'2px'}}>
                             <div className="btn-group btn-group-sm" style={{margin:'2px'}}>
                                 <button className="btn btn-primary" type="button" onClick={(e)=>{dispatch(action.addSlave())}}><i className="glyphicon glyphicon-plus-sign"></i> 添加字段</button>
+                                <button className="btn btn-danger" type="button" onClick={()=>{dispatch(action.deleteSlave(-1))}}><i className="glyphicon glyphicon-trash"></i> 删除所有字段</button>
                             </div>
                         </div>
                         <Grid headers={slaveGridHeaders} dispatch={dispatch} operationConfig={slaveGridOperationCol} rows={masterRowData.variables || []} rowClick={(rowData)=>{

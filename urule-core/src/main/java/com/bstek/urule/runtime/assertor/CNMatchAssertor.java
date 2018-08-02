@@ -84,7 +84,36 @@ public class CNMatchAssertor implements Assertor {
 
 		} else {
 			if(tj.equals(left)){
+				System.out.println("\""+left+"\"匹配\""+tj+"\"");
 				return true;
+			} else if("true".equals(left)) {
+				switch(tj) {	//肯定答案
+					case "是":
+					case "一致":
+					case "存在":
+					case "通过":
+					case "有":
+						System.out.println("\""+left+"\"匹配\""+tj+"\"");
+						return true;
+					default:
+						System.out.println("\""+left+"\"不匹配\""+tj+"\"");
+						return false;
+				}
+			} else if("false".equals(left)) {
+				switch(tj) {	//否定答案
+					case "不是":
+					case "否":
+					case "不一致":
+					case "不存在":
+					case "不通过":
+					case "无":
+					case "没有":
+						System.out.println("\""+left+"\"匹配\""+tj+"\"");
+						return true;
+					default:
+						System.out.println("\""+left+"\"不匹配\""+tj+"\"");
+						return false;
+				}
 			} else {
 				if(StringUtils.isBlank(left)) {
 					left = "undefined";
@@ -195,12 +224,12 @@ public class CNMatchAssertor implements Assertor {
     								if(Character.isDigit(orParts[j].charAt(0))){
     									if(orParts[j].indexOf("以下")>0 || orParts[j].indexOf("以内")>0){
     										sb.append("<");
-    										if(orParts[j].indexOf("不含")<0 && orParts[j].indexOf("不包含")<0){
+    										if(orParts[j].indexOf("不含")<0 && orParts[j].indexOf("不包含")<0 && orParts[j].indexOf("含")>0){
     											sb.append("=");
     										}
     									} else if (orParts[j].indexOf("以上")>0){
     										sb.append(">");
-    										if(orParts[j].indexOf("不含")<0 && orParts[j].indexOf("不包含")<0){
+    										if(orParts[j].indexOf("不含")<0 && orParts[j].indexOf("不包含")<0 && orParts[j].indexOf("含")>0){
     											sb.append("=");
     										}
     									} else {
@@ -223,13 +252,19 @@ public class CNMatchAssertor implements Assertor {
                             if(Character.isDigit(andParts[i].charAt(0))){
                             	if(andParts[i].indexOf("以下")>0 || andParts[i].indexOf("以内")>0){
 									sb.append("<");
+									if(andParts[i].indexOf("不含")<0 && andParts[i].indexOf("不包含")<0 && andParts[i].indexOf("含")>0){
+										sb.append("=");
+									}
 								} else if (andParts[i].indexOf("以上")>0){
 									sb.append(">");
+									if(andParts[i].indexOf("不含")<0 && andParts[i].indexOf("不包含")<0 && andParts[i].indexOf("含")>0){
+										sb.append("=");
+									}
 								} else {
 									sb.append(i % 2 == 0 ? ">" : "<");
-								}
-								if(andParts[i].indexOf("不含")<0 && andParts[i].indexOf("不包含")<0){
-									sb.append("=");
+									if(andParts[i].indexOf("不含")<0 && andParts[i].indexOf("不包含")<0){
+										sb.append("=");
+									}
 								}
 							}
 							FixExprRight(andParts[i], sb);
@@ -266,12 +301,12 @@ public class CNMatchAssertor implements Assertor {
 								if(Character.isDigit(orParts[j].charAt(0))){
 									if(orParts[j].indexOf("以下")>0 || orParts[j].indexOf("以内")>0){
 										sb.append("<");
-										if(orParts[j].indexOf("不含")<0 && orParts[j].indexOf("不包含")<0){
+										if(orParts[j].indexOf("不含")<0 && orParts[j].indexOf("不包含")<0 && orParts[j].indexOf("含")>0){
 											sb.append("=");
 										}
 									} else if (orParts[j].indexOf("以上")>0){
 										sb.append(">");
-										if(orParts[j].indexOf("不含")<0 && orParts[j].indexOf("不包含")<0){
+										if(orParts[j].indexOf("不含")<0 && orParts[j].indexOf("不包含")<0 && orParts[j].indexOf("含")>0){
 											sb.append("=");
 										}
 									} else {
@@ -315,12 +350,12 @@ public class CNMatchAssertor implements Assertor {
 			o = cx.evaluateString(scope, tj, "js", 1, null);
 		} catch (Exception e) {
 			//throw new Exception("", e);
-			System.err.println("表达式\"" + right + "\" => 布尔表达式(js表达式)\"" + tj + "\"计算出错:" + e.getMessage());
+			System.err.println("表达式\"" + right + "\"，参数\""+left+"\" => 布尔表达式(js表达式)\"" + tj + "\"计算出错:" + e.getMessage());
 			e.printStackTrace();
 		}
 		Boolean b = Boolean.parseBoolean(o.toString());
 
-		System.out.println("表达式\"" + right + "\" => 布尔表达式(js表达式)\"" + tj + "\"计算结果:" + b);
+		System.out.println("表达式\"" + right + "\"，参数\""+left+"\" => 布尔表达式(js表达式)\"" + tj + "\"计算结果:" + b);
 		return b;
 	}
 
