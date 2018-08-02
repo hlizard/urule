@@ -137,7 +137,18 @@ urule.VariableValue.prototype.toXml=function(){
 	}
 	var xml="var-category=\""+this.category+"\"";
 	if(this.variableName){
-		xml+=" var=\""+this.variableName+"\" var-label=\""+this.variableLabel+"\" datatype=\""+this.datatype+"\"";
+        var escapeXml  = function (unsafe) {
+             return unsafe.replace(/[<>&'"]/g, function (c) {
+                 switch (c) {
+                     case '<': return '&lt;';
+                     case '>': return '&gt;';
+                     case '&': return '&amp;';
+                     case '\'': return '&apos;';
+                     case '"': return '&quot;';
+                 }
+             });
+         };
+		xml+=" var=\""+this.variableName+"\" var-label=\""+escapeXml(this.variableLabel)+"\" datatype=\""+this.datatype+"\"";
 	}
 	return xml;
 };

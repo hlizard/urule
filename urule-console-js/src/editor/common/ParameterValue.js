@@ -102,7 +102,18 @@ urule.ParameterValue.prototype.toXml=function(){
 	if(!this.parameterLabel || this.parameterLabel==""){
 		throw "参数不能为空！";
 	}
-	var xml=" var-category=\"参数\" var=\""+this.parameterName+"\" var-label=\""+this.parameterLabel+"\" datatype=\""+this.datatype+"\"";
+	var escapeXml  = function (unsafe) {
+         return unsafe.replace(/[<>&'"]/g, function (c) {
+             switch (c) {
+                 case '<': return '&lt;';
+                 case '>': return '&gt;';
+                 case '&': return '&amp;';
+                 case '\'': return '&apos;';
+                 case '"': return '&quot;';
+             }
+         });
+     };
+	var xml=" var-category=\"参数\" var=\""+this.parameterName+"\" var-label=\""+escapeXml(this.parameterLabel)+"\" datatype=\""+this.datatype+"\"";
 	return xml;
 };
 urule.ParameterValue.prototype.getContainer=function(){

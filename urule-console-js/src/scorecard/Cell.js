@@ -35,7 +35,18 @@ export default class Cell{
                     }
                 }
                 xml+=" var=\""+this.variable.name+"\"";
-                xml+=" var-label=\""+this.variable.label+"\"";
+                var escapeXml  = function (unsafe) {
+                     return unsafe.replace(/[<>&'"]/g, function (c) {
+                         switch (c) {
+                             case '<': return '&lt;';
+                             case '>': return '&gt;';
+                             case '&': return '&amp;';
+                             case '\'': return '&apos;';
+                             case '"': return '&quot;';
+                         }
+                     });
+                 };
+                xml+=" var-label=\""+escapeXml(this.variable.label)+"\"";
                 xml+=" datatype=\""+this.variable.type+"\">";
             }
         }else if(this.type==='condition'){

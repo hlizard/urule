@@ -882,7 +882,18 @@ window._setDirty=function(){
 			$.each(cols,function(index,col){
 				var variableName=col.variableName;
 				if(variableName){
-					xml+="<col num=\""+col.num+"\" width=\""+col.width+"\" type=\""+col.type+"\" var-category=\""+(col.variableCategory=="parameter"?"参数":col.variableCategory)+"\" var-label=\""+col.variableLabel+"\" var=\""+col.variableName+"\" datatype=\""+col.datatype+"\"/>"
+                    var escapeXml  = function (unsafe) {
+                         return unsafe.replace(/[<>&'"]/g, function (c) {
+                             switch (c) {
+                                 case '<': return '&lt;';
+                                 case '>': return '&gt;';
+                                 case '&': return '&amp;';
+                                 case '\'': return '&apos;';
+                                 case '"': return '&quot;';
+                             }
+                         });
+                     };
+					xml+="<col num=\""+col.num+"\" width=\""+col.width+"\" type=\""+col.type+"\" var-category=\""+(col.variableCategory=="parameter"?"参数":col.variableCategory)+"\" var-label=\""+escapeXml(col.variableLabel)+"\" var=\""+col.variableName+"\" datatype=\""+col.datatype+"\"/>"
 				}else{
 					xml+="<col num=\""+col.num+"\" width=\""+col.width+"\" type=\""+col.type+"\"/>"	
 				}

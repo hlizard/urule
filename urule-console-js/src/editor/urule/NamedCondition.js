@@ -84,7 +84,18 @@ urule.NamedCondition.prototype.toXml=function(){
 	if(!this.variableName){
 		throw "请定义条件.";
 	}
-	var xml="<named-criteria op=\""+this.operator.getOperator()+"\" var=\""+this.variableName+"\" var-label=\""+this.variableLabel+"\" datatype=\""+this.datatype+"\">";
+	var escapeXml  = function (unsafe) {
+         return unsafe.replace(/[<>&'"]/g, function (c) {
+             switch (c) {
+                 case '<': return '&lt;';
+                 case '>': return '&gt;';
+                 case '&': return '&amp;';
+                 case '\'': return '&apos;';
+                 case '"': return '&quot;';
+             }
+         });
+     };
+	var xml="<named-criteria op=\""+this.operator.getOperator()+"\" var=\""+this.variableName+"\" var-label=\""+escapeXml(this.variableLabel)+"\" datatype=\""+this.datatype+"\">";
 	if(this.inputType){
 		xml+=this.inputType.toXml();
 	}
