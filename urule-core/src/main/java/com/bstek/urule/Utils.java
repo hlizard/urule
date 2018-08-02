@@ -106,8 +106,10 @@ public class Utils implements ApplicationContextAware{
 		} catch (Exception e) {
 			if("No value specified for 'BigDecimal'".equals(e.getMessage())) {
 				try {
-					System.out.println("警告：No value specified for 'BigDecimal, set to BigDecimal.ZERO！");
-					BeanUtils.setProperty(object, property, BigDecimal.ZERO);
+					BigDecimal newval = toBigDecimal(value);
+					System.out.println("警告：No value specified for 'BigDecimal', set to "+newval+"！(property: "+property+", value: "+value+")");
+					if(newval!=null)
+						BeanUtils.setProperty(object, property, toBigDecimal(value));
 					return;
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
@@ -162,11 +164,11 @@ public class Utils implements ApplicationContextAware{
 			if (val instanceof BigDecimal) {
 				return (BigDecimal) val;
 			} else if (val == null) {
-				throw new IllegalArgumentException("Null can not to BigDecimal.");
+				return null; //throw new IllegalArgumentException("Null can not to BigDecimal.");
 			} else if (val instanceof String) {
 				String str = (String) val;
 				if ("".equals(str.trim())) {
-					return BigDecimal.valueOf(0);
+					return null; //return BigDecimal.valueOf(0);
 				}
 				str=str.trim();
 				if(str.endsWith("%")) {
@@ -180,6 +182,8 @@ public class Utils implements ApplicationContextAware{
 					return BigDecimal.valueOf(Integer.MIN_VALUE);
 				else if(Double.POSITIVE_INFINITY == Double.valueOf(str))
 					return BigDecimal.valueOf(Integer.MAX_VALUE);
+				else if(Double.isNaN(Double.valueOf(str)))
+					return null;
 				return new BigDecimal(str);
 			} else if (val instanceof Number) {
 				//遇到计算结果为无穷值时转换整型的最大/最小值，避免报错
@@ -187,6 +191,8 @@ public class Utils implements ApplicationContextAware{
 					return BigDecimal.valueOf(Integer.MIN_VALUE);
 				else if(Double.POSITIVE_INFINITY == Double.valueOf(val.toString()))
 					return BigDecimal.valueOf(Integer.MAX_VALUE);
+				else if(Double.isNaN(Double.valueOf(val.toString())))
+					return null;
 				return new BigDecimal(val.toString());
 			} else if (val instanceof Character) {
 				int i = ((Character) val).charValue();
