@@ -599,6 +599,9 @@
 		<enumeration value="Eval"></enumeration>
 		<enumeration value="Match"></enumeration>
 		<enumeration value="NotMatch"></enumeration>
+		<enumeration value="If"></enumeration>
+		<enumeration value="CNMatch"></enumeration>
+		<enumeration value="NotCNMatch"></enumeration>
 	</restriction>
 </simpleType>
 

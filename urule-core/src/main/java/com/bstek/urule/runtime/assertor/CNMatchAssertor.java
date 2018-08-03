@@ -347,15 +347,22 @@ public class CNMatchAssertor implements Assertor {
 		Object o = null;
 		try {
 			init();	//每次都得调用，避免java.lang.RuntimeException: No Context associated with current Thread
+			if(scope==null) {
+				System.err.println("scope为空！");
+				scope = new Global(cx);
+			}
 			o = cx.evaluateString(scope, tj, "js", 1, null);
 		} catch (Exception e) {
-			//throw new Exception("", e);
-			System.err.println("表达式\"" + right + "\"，参数\""+left+"\" => 布尔表达式(js表达式)\"" + tj + "\"计算出错:" + e.getMessage());
-			e.printStackTrace();
+			System.err.println("参数\""+left+"\", 表达式\"" + right + "\" => 布尔表达式(js表达式)\"" + tj + "\"计算出错:" + e.getMessage());
+			throw e;
 		}
-		Boolean b = Boolean.parseBoolean(o.toString());
+		if(o==null) {
+			System.err.println("警告：参数\""+left+"\", 表达式\"" + right + "\" => 布尔表达式(js表达式)\"" + tj + "\"计算结果为null！");
+			return false;
+		}
+		boolean b = Boolean.parseBoolean(o.toString());
 
-		System.out.println("表达式\"" + right + "\"，参数\""+left+"\" => 布尔表达式(js表达式)\"" + tj + "\"计算结果:" + b);
+		System.out.println("参数\""+left+"\", 表达式\"" + right + "\" => 布尔表达式(js表达式)\"" + tj + "\"计算结果:" + b);
 		return b;
 	}
 
