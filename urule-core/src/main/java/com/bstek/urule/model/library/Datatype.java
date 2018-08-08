@@ -93,10 +93,11 @@ public enum Datatype {
 			if(value==null)return value;
 			return value.toString();
 		case Integer:
-			if(value==null || value.toString().equals("")){
-				value="0";
-			}
-			return Utils.toBigDecimal(value).intValue();
+//			if(value==null || value.toString().equals("")){
+//				value="0";
+//			}
+			BigDecimal val = Utils.toBigDecimal(value);
+			return val==null?null:val.intValue();
 		case Char:
 			if(value==null){
 				return '\u0000';
@@ -112,24 +113,27 @@ public enum Datatype {
 				return (char)intValue;
 			}
 		case Double:
-			if(value==null){
-				value="0";
-			}
-			return Utils.toBigDecimal(value).doubleValue();
+//			if(value==null){
+//				value="0";
+//			}
+			val = Utils.toBigDecimal(value);
+			return val==null?null:val.doubleValue();
 		case Long:
-			if(value==null){
-				value="0";
-			}
-			return Utils.toBigDecimal(value).longValue();
+//			if(value==null){
+//				value="0";
+//			}
+			val = Utils.toBigDecimal(value);
+			return val==null?null:val.longValue();
 		case Float:
-			if(value==null){
-				value="0";
-			}
-			return Utils.toBigDecimal(value).floatValue();
+//			if(value==null){
+//				value="0";
+//			}
+			val = Utils.toBigDecimal(value);
+			return val==null?null:val.floatValue();
 		case BigDecimal:
-			if(value==null){
-				value="0";
-			}
+//			if(value==null){
+//				value="0";
+//			}
 			return Utils.toBigDecimal(value);
 		case Boolean:
 			if(value==null){

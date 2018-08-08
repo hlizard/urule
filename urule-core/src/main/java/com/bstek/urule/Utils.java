@@ -107,7 +107,7 @@ public class Utils implements ApplicationContextAware{
 			if("No value specified for 'BigDecimal'".equals(e.getMessage())) {
 				try {
 					BigDecimal newval = toBigDecimal(value);
-					System.out.println("警告：No value specified for 'BigDecimal', set to "+newval+"！(property: "+property+", value: "+value+")");
+					System.err.println("警告：No value specified for 'BigDecimal', set to "+newval+"！(property: "+property+", value: "+value+")");
 					if(newval!=null)
 						BeanUtils.setProperty(object, property, toBigDecimal(value));
 					return;
@@ -163,7 +163,7 @@ public class Utils implements ApplicationContextAware{
 		try{
 			if (val instanceof BigDecimal) {
 				return (BigDecimal) val;
-			} else if (val == null) {
+			} else if (val == null || val instanceof org.mozilla.javascript.Undefined) {
 				return null; //throw new IllegalArgumentException("Null can not to BigDecimal.");
 			} else if (val instanceof String) {
 				String str = (String) val;

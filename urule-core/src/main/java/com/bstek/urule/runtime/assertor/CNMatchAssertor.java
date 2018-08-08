@@ -59,6 +59,7 @@ public class CNMatchAssertor implements Assertor {
 	        cx.setLanguageVersion(Context.VERSION_1_7);
 	        Main.processFile(cx, scope, dir + "envjs/env.rhino.js");
 	        Main.processFile(cx, scope, dir + "envjs/jquery.js");
+	        Main.processFile(cx, scope, dir + "envjs/moment.min.js");
 	        jscontextHolder.set(cx);
 		}
 	}
@@ -134,9 +135,9 @@ public class CNMatchAssertor implements Assertor {
 				{
 					String spliter = ",|，|;|；";
 					int indexOfJH = tj.indexOf('-');
-					if(indexOfJH>0 && (Character.isDigit(tj.charAt(indexOfJH-1))
-							|| tj.charAt(indexOfJH-1)!='=' || tj.charAt(indexOfJH-1)!='>' || tj.charAt(indexOfJH-1)!='<'
-							|| tj.charAt(indexOfJH-1)!='、' || tj.charAt(indexOfJH-1)!='于')){
+					if(indexOfJH>0 && ((Character.isDigit(tj.charAt(indexOfJH-1))
+							|| (tj.charAt(indexOfJH-1)!='=' && tj.charAt(indexOfJH-1)!='>' && tj.charAt(indexOfJH-1)!='<'
+							&& tj.charAt(indexOfJH-1)!='、' && tj.charAt(indexOfJH-1)!='于')))){
 						spliter+="|-";
 					}
 					String[] andParts = tj.split(spliter);
@@ -260,11 +261,13 @@ public class CNMatchAssertor implements Assertor {
 									if(andParts[i].indexOf("不含")<0 && andParts[i].indexOf("不包含")<0 && andParts[i].indexOf("含")>0){
 										sb.append("=");
 									}
-								} else {
+								} else if (andParts.length > 1) {
 									sb.append(i % 2 == 0 ? ">" : "<");
 									if(andParts[i].indexOf("不含")<0 && andParts[i].indexOf("不包含")<0){
 										sb.append("=");
 									}
+								} else {
+									sb.append("==");
 								}
 							}
 							FixExprRight(andParts[i], sb);
