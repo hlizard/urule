@@ -53,22 +53,37 @@ public class EqualsAssertor implements Assertor {
 		case Double:
 			b1=Utils.toBigDecimal(left);
 			b2=Utils.toBigDecimal(right);
+			if(b1 == null || b2 == null) {
+				return false;
+			}
 			return b1.compareTo(b2)==0;
 		case Float:
 			b1=Utils.toBigDecimal(left);
 			b2=Utils.toBigDecimal(right);
+			if(b1 == null || b2 == null) {
+				return false;
+			}
 			return b1.compareTo(b2)==0;
 		case Integer:
 			b1=Utils.toBigDecimal(left);
 			b2=Utils.toBigDecimal(right);
+			if(b1 == null || b2 == null) {
+				return false;
+			}
 			return b1.compareTo(b2)==0;
 		case Long:
 			b1=Utils.toBigDecimal(left);
 			b2=Utils.toBigDecimal(right);
+			if(b1 == null || b2 == null) {
+				return false;
+			}
 			return b1.compareTo(b2)==0;
 		case BigDecimal:
 			b1=Utils.toBigDecimal(left);
 			b2=Utils.toBigDecimal(right);
+			if(b1 == null || b2 == null) {
+				return false;
+			}
 			return b1.compareTo(b2)==0;
 		case Enum:
 			Enum<?> e1=(Enum<?>)left;

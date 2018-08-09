@@ -182,30 +182,26 @@ public class ElCalculator {
         Object result = null;
         BigDecimal first,second;
         try{
+    		first=Utils.toBigDecimal(firstValue);
+    		if(first == null) {
+    			result = "null";
+    			return result;
+    		}
+    		second=Utils.toBigDecimal(secondValue);
         	switch (currentOp) {
         	case '+':
-        		first=Utils.toBigDecimal(firstValue);
-        		second=Utils.toBigDecimal(secondValue);
         		result=first.add(second);
         		break;
         	case '-':
-        		first=Utils.toBigDecimal(firstValue);
-        		second=Utils.toBigDecimal(secondValue);
         		result=first.subtract(second);
         		break;
         	case '*':
-        		first=Utils.toBigDecimal(firstValue);
-        		second=Utils.toBigDecimal(secondValue);
         		result=first.multiply(second);
         		break;
         	case '/':
-        		first=Utils.toBigDecimal(firstValue);
-        		second=Utils.toBigDecimal(secondValue);
         		result=first.divide(second,10,RoundingMode.HALF_UP);
         		break;
         	case '%':
-        		first=Utils.toBigDecimal(firstValue);
-        		second=Utils.toBigDecimal(secondValue);
         		result=first.doubleValue() % second.doubleValue();
         		break;
         	}

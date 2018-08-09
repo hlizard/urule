@@ -47,6 +47,9 @@ public class LessThenEqualsAssertor implements Assertor {
 		}else{
 			BigDecimal leftNumber=Utils.toBigDecimal(left);
 			BigDecimal rightNumber=Utils.toBigDecimal(right);
+			if(leftNumber == null || rightNumber == null) {
+				return false;
+			}
 			int result=leftNumber.compareTo(rightNumber);
 			if(result==-1 || result==0){
 				return true;

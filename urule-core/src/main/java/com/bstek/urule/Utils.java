@@ -167,7 +167,7 @@ public class Utils implements ApplicationContextAware{
 				return null; //throw new IllegalArgumentException("Null can not to BigDecimal.");
 			} else if (val instanceof String) {
 				String str = (String) val;
-				if ("".equals(str.trim())) {
+				if ("".equals(str.trim()) || "null".equals(str.trim())) {
 					return null; //return BigDecimal.valueOf(0);
 				}
 				str=str.trim();
