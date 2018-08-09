@@ -83,10 +83,15 @@ public class IfAssertor implements Assertor {
 			System.err.println("布尔表达式(js表达式)\"" + tj + "\"计算出错:" + e.getMessage());
 			e.printStackTrace();
 		}
-		Boolean b = Boolean.parseBoolean(o.toString());
+		Boolean b = null;
+		if(o==null || o instanceof org.mozilla.javascript.Undefined || StringUtils.isBlank(o.toString()) || "null".equals(o.toString().trim())) {
+			b = false;
+		} else {
+			b = Boolean.parseBoolean(o.toString());
+		}
 
 		System.out.println("布尔表达式(js表达式)\"" + tj + "\"计算结果:" + b);
-		return b;
+		return b.booleanValue();
 	}
 
 	public boolean support(Op op) {
