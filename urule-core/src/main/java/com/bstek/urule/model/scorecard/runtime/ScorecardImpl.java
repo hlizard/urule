@@ -41,6 +41,9 @@ public class ScorecardImpl implements Scorecard {
 		BigDecimal result=new BigDecimal(0);
 		for(RowItem row:rowItems){
 			BigDecimal score=Utils.toBigDecimal(row.getScore());
+			if(score==null) {
+				score = BigDecimal.ZERO;
+			}
 			row.setActualScore(score);
 			result=result.add(score);
 		}
@@ -53,6 +56,12 @@ public class ScorecardImpl implements Scorecard {
 		for(RowItem row:rowItems){
 			BigDecimal score=Utils.toBigDecimal(row.getScore());
 			BigDecimal weight=Utils.toBigDecimal(row.getWeight());
+			if(score==null) {
+				score = BigDecimal.ZERO;
+			}
+			if(weight==null) {
+				weight = BigDecimal.ZERO;
+			}
 			BigDecimal actualScore=score.multiply(weight);
 			row.setActualScore(actualScore);
 			result=result.add(actualScore);

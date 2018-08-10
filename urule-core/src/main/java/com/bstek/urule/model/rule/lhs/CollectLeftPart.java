@@ -39,14 +39,22 @@ public class CollectLeftPart extends AbstractLeftPart {
 			BigDecimal total=new BigDecimal(0);
 			for(Object fact:facts){
 				Object propertyValue=Utils.getObjectProperty(fact, property);
-				total=total.add(Utils.toBigDecimal(propertyValue));
+				BigDecimal val = Utils.toBigDecimal(propertyValue);
+				if(val==null) {
+					val = BigDecimal.ZERO;
+				}
+				total=total.add(val);
 			}
 			return total.divide(new BigDecimal(match), 4, BigDecimal.ROUND_HALF_UP);
 		}else if(purpose.equals(CollectPurpose.sum)){
 			BigDecimal total=new BigDecimal(0);
 			for(Object fact:facts){
 				Object propertyValue=Utils.getObjectProperty(fact, property);
-				total=total.add(Utils.toBigDecimal(propertyValue));
+				BigDecimal val = Utils.toBigDecimal(propertyValue);
+				if(val==null) {
+					val = BigDecimal.ZERO;
+				}
+				total=total.add(val);
 			}
 			return total;
 		}else if(purpose.equals(CollectPurpose.max)){
@@ -54,6 +62,9 @@ public class CollectLeftPart extends AbstractLeftPart {
 			for(Object fact:facts){
 				Object propertyValue=Utils.getObjectProperty(fact, property);
 				BigDecimal decValue=Utils.toBigDecimal(propertyValue);
+				if(decValue==null) {
+					continue;
+				}
 				int result=decValue.compareTo(max);
 				if(result==1){
 					max=decValue;
@@ -65,6 +76,9 @@ public class CollectLeftPart extends AbstractLeftPart {
 			for(Object fact:facts){
 				Object propertyValue=Utils.getObjectProperty(fact, property);
 				BigDecimal decValue=Utils.toBigDecimal(propertyValue);
+				if(decValue==null) {
+					decValue = BigDecimal.ZERO;
+				}
 				if(min!=null){
 					int result=decValue.compareTo(min);
 					if(result==-1){

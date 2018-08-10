@@ -76,9 +76,16 @@ public enum Datatype {
 			return b;
 		case BigDecimal:
 			BigDecimal bb=Utils.toBigDecimal(value);
+			if(bb==null) {
+				return "";
+			}
 			return bb.floatValue()+"";
 		case Double:
-			Double d=Utils.toBigDecimal(value).doubleValue();
+			bb = Utils.toBigDecimal(value);
+			if(bb==null) {
+				return "";
+			}
+			Double d=bb.doubleValue();
 			return d.floatValue()+"";
 		default:
 			return value.toString();
@@ -109,7 +116,11 @@ public enum Datatype {
 			if(str.length()==1){
 				return str.toCharArray()[0];
 			}else{
-				int intValue=Utils.toBigDecimal(value).intValue();
+				val = Utils.toBigDecimal(value);
+				if(val==null) {
+					return null;
+				}
+				int intValue=val.intValue();
 				return (char)intValue;
 			}
 		case Double:

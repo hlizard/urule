@@ -40,6 +40,9 @@ public class SinFunctionDescriptor implements FunctionDescriptor {
 	public Object doFunction(Object object, String property,WorkingMemory workingMemory) {
 		Object obj=Utils.getObjectProperty(object, property);
 		BigDecimal bigobj=Utils.toBigDecimal(obj);
+		if(bigobj==null) {
+			return Double.NaN;
+		}
 		return Math.sin(bigobj.doubleValue());
 	}
 

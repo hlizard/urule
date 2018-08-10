@@ -31,6 +31,9 @@ public class MathAction {
 	@ActionMethodParameter(names={"数字"})
 	public Number abs(Object obj){
 		BigDecimal v1=Utils.toBigDecimal(obj);
+		if(v1==null) {
+			return Double.NaN;
+		}
 		return Math.abs(v1.doubleValue());
 	}
 	@ActionMethod(name="求最大值")
@@ -38,6 +41,12 @@ public class MathAction {
 	public Number max(Object obj,Object obj1){
 		BigDecimal v1=Utils.toBigDecimal(obj);
 		BigDecimal v2=Utils.toBigDecimal(obj1);
+		if(v1==null) {
+			return v2==null?Double.NaN:v2;
+		}
+		if(v2==null) {
+			return Double.NaN;
+		}
 		return Math.max(v1.doubleValue(), v2.doubleValue());
 	}
 	@ActionMethod(name="求最小值")
@@ -45,6 +54,12 @@ public class MathAction {
 	public Number min(Object obj,Object obj1){
 		BigDecimal v1=Utils.toBigDecimal(obj);
 		BigDecimal v2=Utils.toBigDecimal(obj1);
+		if(v1==null) {
+			return v2==null?Double.NaN:v2;
+		}
+		if(v2==null) {
+			return Double.NaN;
+		}
 		return Math.min(v1.doubleValue(), v2.doubleValue());
 	}
 	
@@ -52,36 +67,54 @@ public class MathAction {
 	@ActionMethodParameter(names={"数字"})
 	public Number in(Object obj){
 		BigDecimal v1=Utils.toBigDecimal(obj);
+		if(v1==null) {
+			return Double.NaN;
+		}
 		return Math.sin(v1.doubleValue());
 	}
 	@ActionMethod(name="求余弦")
 	@ActionMethodParameter(names={"数字"})
 	public Number cos(Object obj){
 		BigDecimal v1=Utils.toBigDecimal(obj);
+		if(v1==null) {
+			return Double.NaN;
+		}
 		return Math.cos(v1.doubleValue());
 	}
 	@ActionMethod(name="求正切")
 	@ActionMethodParameter(names={"数字"})
 	public Number tan(Object obj){
 		BigDecimal v1=Utils.toBigDecimal(obj);
+		if(v1==null) {
+			return Double.NaN;
+		}
 		return Math.tan(v1.doubleValue());
 	}
 	@ActionMethod(name="求余切")
 	@ActionMethodParameter(names={"数字"})
 	public Number cot(Object obj){
 		BigDecimal v1=Utils.toBigDecimal(obj);
+		if(v1==null) {
+			return Double.NaN;
+		}
 		return 1/Math.tan(v1.doubleValue());
 	}
 	@ActionMethod(name="求e为底的对数")
 	@ActionMethodParameter(names={"数字"})
 	public Number log(Object obj){
 		BigDecimal v1=Utils.toBigDecimal(obj);
+		if(v1==null) {
+			return Double.NaN;
+		}
 		return Math.log(v1.doubleValue());
 	}
 	@ActionMethod(name="求10为底的对数")
 	@ActionMethodParameter(names={"数字"})
 	public Number log10(Object obj){
 		BigDecimal v1=Utils.toBigDecimal(obj);
+		if(v1==null) {
+			return Double.NaN;
+		}
 		return Math.log10(v1.doubleValue());
 	}
 	
@@ -89,6 +122,9 @@ public class MathAction {
 	@ActionMethodParameter(names={"数字"})
 	public Number round(Object obj){
 		BigDecimal v1=Utils.toBigDecimal(obj);
+		if(v1==null) {
+			return Double.NaN;
+		}
 		return Math.round(v1.doubleValue());
 	}
 }

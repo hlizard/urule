@@ -109,7 +109,7 @@ public class Utils implements ApplicationContextAware{
 					BigDecimal newval = toBigDecimal(value);
 					System.err.println("警告：No value specified for 'BigDecimal', set to "+newval+"！(property: "+property+", value: "+value+")");
 					if(newval!=null)
-						BeanUtils.setProperty(object, property, toBigDecimal(value));
+						BeanUtils.setProperty(object, property, newval);
 					return;
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block

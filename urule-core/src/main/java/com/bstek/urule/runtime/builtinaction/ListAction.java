@@ -46,6 +46,9 @@ public class ListAction {
 		double max=Double.MIN_VALUE;
 		for(Object obj:list){
 			BigDecimal v=Utils.toBigDecimal(obj);
+			if(v==null) {
+				continue;
+			}
 			max=Math.max(max, v.doubleValue());
 		}
 		return max;
@@ -60,6 +63,9 @@ public class ListAction {
 		double min=Double.MAX_VALUE;
 		for(Object obj:list){
 			BigDecimal v=Utils.toBigDecimal(obj);
+			if(v==null) {
+				continue;
+			}
 			min=Math.min(min, v.doubleValue());
 		}
 		return min;
@@ -123,6 +129,12 @@ public class ListAction {
 				if(v1 instanceof Number){
 					BigDecimal b1=Utils.toBigDecimal(v1);
 					BigDecimal b2=Utils.toBigDecimal(v2);
+					if(b1==null) {
+						b1 = BigDecimal.ZERO;
+					}
+					if(b2==null) {
+						b2 = BigDecimal.ZERO;
+					}
 					if(asc){
 						return b1.compareTo(b2);
 					}else{

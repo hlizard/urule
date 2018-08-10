@@ -48,6 +48,9 @@ public class AbsFunctionDescriptor implements FunctionDescriptor{
 	public Object doFunction(Object object, String property,WorkingMemory workingMemory) {
 		Object value=Utils.getObjectProperty(object, property);
 		BigDecimal bigvalue=Utils.toBigDecimal(value);
+		if(bigvalue==null) {
+			return Double.NaN;
+		}
 		return Math.abs(bigvalue.doubleValue());
 	}
 	@Override

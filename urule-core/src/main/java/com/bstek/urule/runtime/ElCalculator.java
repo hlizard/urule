@@ -183,11 +183,11 @@ public class ElCalculator {
         BigDecimal first,second;
         try{
     		first=Utils.toBigDecimal(firstValue);
-    		if(first == null) {
+    		second=Utils.toBigDecimal(secondValue);
+    		if(first == null || second == null) {
     			result = "null";
     			return result;
     		}
-    		second=Utils.toBigDecimal(secondValue);
         	switch (currentOp) {
         	case '+':
         		result=first.add(second);

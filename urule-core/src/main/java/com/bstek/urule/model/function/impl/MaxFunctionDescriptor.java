@@ -59,6 +59,9 @@ public class MaxFunctionDescriptor implements FunctionDescriptor{
 		for(Object obj:list){
 			Object pvalue=Utils.getObjectProperty(obj, property);
 			BigDecimal a=Utils.toBigDecimal(pvalue);
+			if(a==null) {
+				a = BigDecimal.ZERO;
+			}
 			if(max==null){
 				max=a;
 				maxObj=obj;
