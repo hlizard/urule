@@ -66,14 +66,14 @@ public class CNMatchAssertor implements Assertor {
 
 	public boolean eval(Object leftObj, Object right,Datatype datatype) {
 		//忽略左侧运算数
-		String tj = right == null ? null : right.toString();
+		String tj = right == null ? null : right.toString().replace("\r", "\\n").replace("\n", "\\n").replace("\\n\n", "\\n");
 		if(StringUtils.isBlank(tj)) {
 			return true;
 		}
 		tj = tj.trim();
 		String left = null;
 		if(leftObj != null){
-			left = datatype.convertObjectToString(leftObj).trim();
+			left = datatype.convertObjectToString(leftObj).trim().replace("\r", "\\n").replace("\n", "\\n").replace("\\n\n", "\\n");
 		}
 		if(tj.startsWith("javascript:")){
 			tj = tj.substring(11);
