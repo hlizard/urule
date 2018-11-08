@@ -16,17 +16,27 @@ urule.SimpleValue=function(arithmetic,data){
 		var text=self.editor.prop("value");
 		if(text!=""){
 		    var err = null;
+		    var context = {};
 		    do{
                 try{
-                    var jsval = eval(text);
+                    //with(context){  //SyntaxError: E:/MyCode/urule/urule-console-js/src/editor/common/SimpleValue2.js: 'with' in strict mode (22:20)
+                        var jsval = eval(text);
+                    //}
                     err = null;
                     alert(jsval);
                 } catch(e) {
                     err = e;
                     if(e.message.indexOf(' is not defined') > 0){
                         var varname = e.message.split(' is not defined')[0];
+                        //var pretext = 'var ' + varname + '=';
+                        //pretext += 'prompt("请输入变量'+varname+'的值进行测试","");\n';
+                        //text = pretext + text;
+
+                        //context[varname] = prompt("请输入变量"+varname+"的值进行测试","");
+
                         var pretext = 'var ' + varname + '=';
-                        pretext += 'prompt("请输入变量'+varname+'的值进行测试","");\n';
+                        var prompttext = prompt("请输入变量"+varname+"的值进行测试","");
+                        pretext += 'eval("'+prompttext+'");\n';
                         text = pretext + text;
                     } else {
                         alert('测试js表达式出错：'+e.message);
