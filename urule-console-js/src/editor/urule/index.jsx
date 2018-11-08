@@ -44,7 +44,6 @@ import '../common/FunctionProperty.js';
 import '../common/FunctionParameter.js';
 import '../common/FunctionValue.js';
 import '../common/SimpleValue2.js';
-import '../common/Textarea.js';
 import './NamedReferenceValue.js';
 import './Condition.js';
 import './Rule.js';

@@ -8,7 +8,7 @@ urule.SimpleValue=function(arithmetic,data){
 	this.valueContainer.css({
 		color:"rgb(180,95,4)"
 	});
-	this.editor=$(`<textarea class='form-control' rows='4' style="width: 360px;"></textarea>`);
+	this.editor=$(`<textarea class='form-control' rows='4'></textarea>`);
 	var self=this;
 	this.container.append(this.valueContainer).append(this.editor);
 	this.editor.blur(function(){
