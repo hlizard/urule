@@ -7,3 +7,4 @@ d:\Junction\junction64.exe bower_components F:\temp\urule-console-js\bower_compo
 call webpack --config webpack.config.min.js
 d:\Junction\junction64.exe -d bower_components
 d:\Junction\junction64.exe -d node_modules
+pause

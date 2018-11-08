@@ -1,12 +1,14 @@
 /**
  * Created by Jacky.gao on 2016/10/25.
  */
-window.Remark=function (container) {
+urule.Textarea=function (arithmetic,data){
+	this.container=$("<span>");
     this.remark="";
-    this.defaultRemark="请输入备注内容";
-    this.init(container);
+    this.defaultRemark="请输入值";
+	this.arithmetic=arithmetic;
+    this.init(container, data);
 };
-Remark.prototype.init=function (container) {
+urule.Textarea.prototype.init=function (container, data) {
     var toolbar=$("<div style='cursor:pointer;color:#777;font-size:12px'>备注</div>");
     container.append(toolbar);
     var icon=$("<i class='glyphicon glyphicon-circle-arrow-down'></i>");
@@ -57,9 +59,13 @@ Remark.prototype.init=function (container) {
         icon.addClass("glyphicon-circle-arrow-right");
     });
     contentContainer.collapse('hide');
+	this.container.append(this.arithmetic.getContainer());
+	if(this.arithmetic){
+		this.arithmetic.initData(data["arithmetic"]);
+	}
 };
 
-Remark.prototype.setData=function (data) {
+urule.Textarea.prototype.setData=function (data) {
     if(!data || data===""){
         return;
     }
@@ -68,13 +74,36 @@ Remark.prototype.setData=function (data) {
     this.remarkLabel.html(this.parseBreak(data));
 };
 
-Remark.prototype.toXml=function () {
+urule.Textarea.prototype.toXml=function () {
     return "<remark><![CDATA["+this.remark+"]]></remark>";
 };
 
-Remark.prototype.parseBreak=function (data) {
+urule.Textarea.prototype.parseBreak=function (data) {
     data=data.replace(new RegExp("<",'gm'),'&lt;');
     data=data.replace(new RegExp(">",'gm'),'&gt;');
     data=data.replace(new RegExp("\n",'gm'),'</br>');
     return data;
+};
+urule.Textarea.prototype.getValue=function(){
+	var value=this.remark;
+	value=value.replace(new RegExp("&","gm"),"&amp;");
+	value=value.replace(new RegExp("<","gm"),"&lt;");
+	value=value.replace(new RegExp(">","gm"),"&gt;");
+	value=value.replace(new RegExp("'","gm"),"&apos;");
+	value=value.replace(new RegExp("\"","gm"),"&quot;");
+	return value;
+};
+urule.Textarea.prototype.getContainer=function(){
+	return this.container;
+};
+
+urule.SimpleValue.prototype.getDisplayContainer=function(){
+	var container=$("<span>"+this.remark+"</span>");
+	if(this.arithmetic){
+		var dis=this.arithmetic.getDisplayContainer();
+		if(dis){
+			container.append(dis);
+		}
+	}
+	return container;
 };

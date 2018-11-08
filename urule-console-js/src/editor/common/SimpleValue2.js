@@ -8,7 +8,7 @@ urule.SimpleValue=function(arithmetic,data){
 	this.valueContainer.css({
 		color:"rgb(180,95,4)"
 	});
-	this.editor=$(`<input type='text' class="form-control rule-text-editor" style="height: 22px;">`);
+	this.editor=$(`<textarea class='form-control' rows='4' style="width: 360px;"></textarea>`);
 	var self=this;
 	this.container.append(this.valueContainer).append(this.editor);
 	this.editor.blur(function(){
@@ -30,7 +30,7 @@ urule.SimpleValue=function(arithmetic,data){
 	this.valueContainer.click(function(){
 		self.valueContainer.hide();
 		var parent=self.container.parent();
-		var maxWidth=120;
+		var maxWidth=360;
 		if(parent && parent.parent() && parent.parent().parent()){
 			parent=parent.parent().parent();
 			var css=parent.prop("class");
@@ -80,6 +80,8 @@ urule.SimpleValue.prototype.getValue=function(){
 	value=value.replace(new RegExp(">","gm"),"&gt;");
 	value=value.replace(new RegExp("'","gm"),"&apos;");
 	value=value.replace(new RegExp("\"","gm"),"&quot;");
+	value=value.replace(new RegExp("\\n","gm"),"&#x000A;");
+	value=value.replace(new RegExp("\\r","gm"),"&#x000D;");
 	return value;
 };
 urule.SimpleValue.prototype.getContainer=function(){
