@@ -15,7 +15,27 @@ urule.SimpleValue=function(arithmetic,data){
 		self.editor.hide();
 		var text=self.editor.prop("value");
 		if(text!=""){
-			URule.setDomContent(self.valueContainer,text);
+		    var err = null;
+		    do{
+                try{
+                    var jsval = eval(text);
+                    err = null;
+                    alert(jsval);
+                } catch(e) {
+                    err = e;
+                    if(e.message.indexOf(' is not defined') > 0){
+                        var varname = e.message.split(' is not defined')[0];
+                        var pretext = 'var ' + varname + '=';
+                        pretext += 'prompt("请输入变量'+varname+'的值进行测试","");\n';
+                        text = pretext + text;
+                    } else {
+                        alert('测试js表达式出错：'+e.message);
+                        err = null;
+                        //return false;
+                    }
+                }
+		    } while (err)
+			URule.setDomContent(self.valueContainer,self.editor.prop("value"));
 		}
 		self.valueContainer.show();
 		$(this).trigger("DOMSubtreeModified");
