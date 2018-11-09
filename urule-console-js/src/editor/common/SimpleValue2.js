@@ -15,7 +15,8 @@ urule.SimpleValue=function(arithmetic,data){
 		var text=self.editor.prop("value");
 		if(text!=""){
 		    var trimtext = $.trim(text);
-		    if((trimtext.indexOf('x')>=0 || trimtext.indexOf('y')>=0 || trimtext.indexOf('z')>=0) && trimtext!=='x' && trimtext!=='y' && trimtext!=='z'){
+		    //if((trimtext.indexOf('x')>=0 || trimtext.indexOf('y')>=0 || trimtext.indexOf('z')>=0) && trimtext!=='x' && trimtext!=='y' && trimtext!=='z'){
+		    if(/((?=[\x21-\x7e]+)[^A-Za-z0-9])/.test(trimtext)){    //这个匹配所有键盘上可见的非字母和数字的符号
                 var err = null;
                 //var context = {};
                 do{
