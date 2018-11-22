@@ -21,6 +21,17 @@ export function saveData(data,newVersion,file) {
     let xml='<?xml version="1.0" encoding="utf-8"?>';
     xml+='<variable-library>';
     let errorInfo='';
+    var escapeXml  = function (unsafe) {
+         return unsafe.replace(/[<>&'"]/g, function (c) {
+             switch (c) {
+                 case '<': return '&lt;';
+                 case '>': return '&gt;';
+                 case '&': return '&amp;';
+                 case '\'': return '&apos;';
+                 case '"': return '&quot;';
+             }
+         });
+     };
     data.forEach((item,index)=>{
         if(!item.name || item.name.length<1){
             errorInfo='变量分类名称不能为空.';
@@ -49,7 +60,7 @@ export function saveData(data,newVersion,file) {
                 errorInfo='变量数据类型不能为空.';
                 return false;
             }
-           xml+="<var act='InOut' name='"+variable.name+"' label='"+variable.label+"' type='"+variable.type+"'/>";
+           xml+="<var act='InOut' name='"+variable.name+"' label='"+escapeXml(variable.label)+"' type='"+variable.type+"'/>";
         });
         if(errorInfo.length>1){
             return false;
