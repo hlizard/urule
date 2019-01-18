@@ -157,7 +157,7 @@ public class ScorecardResourceBuilder implements ResourceBuilder<ScoreRule> {
 		}
 		Rhs rhs=new Rhs();
 		rule.setRhs(rhs);
-		ScoringAction action=new ScoringAction(attributeCell.getRow(),ScoreRuntimeValue.SCORE_VALUE,attributeCell.getWeight());
+		ScoringAction action=new ScoringAction(scoreCell.getRow(),ScoreRuntimeValue.SCORE_VALUE,attributeCell.getWeight());
 		action.setValue(scoreCell.getValue());
 		rhs.addAction(action);
 		return rule;
