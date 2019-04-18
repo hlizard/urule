@@ -90,8 +90,19 @@ urule.ConstantValue.prototype.getDisplayContainer=function(){
 urule.ConstantValue.prototype.toXml=function(){
 	if(!this.category){
 		throw "常量不能为空！";
-	}
-	var xml="const-category=\""+this.category+"\" const=\""+this.constantName+"\" const-label=\""+this.constantLabel+"\"";
+	} 
+	var escapeXml  = function (unsafe) {
+         return unsafe.replace(/[<>&'"]/g, function (c) {
+             switch (c) {
+                 case '<': return '&lt;';
+                 case '>': return '&gt;';
+                 case '&': return '&amp;';
+                 case '\'': return '&apos;';
+                 case '"': return '&quot;';
+             }
+         });
+     };
+	var xml="const-category=\""+this.category+"\" const=\""+this.constantName+"\" const-label=\""+escapeXml(this.constantLabel)+"\"";
 	return xml;
 };
 urule.ConstantValue.prototype.getContainer=function(){

@@ -15,6 +15,17 @@ export function save(newVersion,file){
 }
 
 export function saveData(data,newVersion,file) {
+	var escapeXml  = function (unsafe) {
+         return unsafe.replace(/[<>&'"]/g, function (c) {
+             switch (c) {
+                 case '<': return '&lt;';
+                 case '>': return '&gt;';
+                 case '&': return '&amp;';
+                 case '\'': return '&apos;';
+                 case '"': return '&quot;';
+             }
+         });
+     };
     let xml='<?xml version="1.0" encoding="utf-8"?>';
     xml+='<constant-library>';
     let errorInfo='';
@@ -27,7 +38,7 @@ export function saveData(data,newVersion,file) {
             errorInfo='常量分类标题不能为空.';
             return false;
         }
-        xml+="<category name='"+item.name+"' label='"+item.label+"'>";
+        xml+="<category name='"+item.name+"' label='"+escapeXml(item.label)+"'>";
         var constants=item.constants;
         if(!constants || constants.length===0){
             errorInfo="常量分类["+item.label+"]下未定义具体的常量信息";
@@ -46,7 +57,7 @@ export function saveData(data,newVersion,file) {
                 errorInfo='常量数据类型不能为空.';
                 return false;
             }
-            xml+="<constant name='"+constant.name+"' label='"+constant.label+"' type='"+constant.type+"'/>";
+            xml+="<constant name='"+constant.name+"' label='"+escapeXml(constant.label)+"' type='"+constant.type+"'/>";
         });
         if(errorInfo.length>1){
             return false;
