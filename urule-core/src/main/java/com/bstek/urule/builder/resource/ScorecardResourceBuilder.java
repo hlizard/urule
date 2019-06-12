@@ -61,6 +61,7 @@ public class ScorecardResourceBuilder implements ResourceBuilder<ScoreRule> {
 	public ScoreRule build(Element root) {
 		ScorecardDefinition scorecard = scorecardDeserializer.deserialize(root);
 		ScoreRule scoreRule=new ScoreRule();
+		scoreRule.setScorecardDefinition(scorecard);
 		scoreRule.setName(scorecard.getName());
 		scoreRule.setEffectiveDate(scorecard.getEffectiveDate());
 		scoreRule.setExpiresDate(scorecard.getExpiresDate());

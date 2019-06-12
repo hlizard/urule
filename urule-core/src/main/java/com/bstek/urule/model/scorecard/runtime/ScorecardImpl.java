@@ -20,6 +20,8 @@ import java.util.List;
 
 import com.bstek.urule.Utils;
 import com.bstek.urule.debug.MsgType;
+import com.bstek.urule.model.scorecard.ScorecardDefinition;
+import com.bstek.urule.runtime.KnowledgePackageWrapper;
 import com.bstek.urule.runtime.rete.Context;
 
 /**
@@ -30,11 +32,15 @@ public class ScorecardImpl implements Scorecard {
 	private String name;
 	private boolean debug;
 	private List<RowItem> rowItems;
+	private ScorecardDefinition scorecardDefinition;
+	private KnowledgePackageWrapper knowledgePackageWrapper;
 	
-	public ScorecardImpl(String name, List<RowItem> rowItems,boolean debug) {
+	public ScorecardImpl(String name, List<RowItem> rowItems,boolean debug, ScorecardDefinition scorecardDefinition, KnowledgePackageWrapper knowledgePackageWrapper) {
 		this.name = name;
 		this.rowItems = rowItems;
 		this.debug=debug;
+		this.scorecardDefinition=scorecardDefinition;
+		this.knowledgePackageWrapper=knowledgePackageWrapper;
 	}
 
 	public BigDecimal executeSum(Context context){
@@ -77,5 +83,15 @@ public class ScorecardImpl implements Scorecard {
 	@Override
 	public List<RowItem> getRowItems() {
 		return rowItems;
+	}
+
+	@Override
+	public ScorecardDefinition getScorecardDefinition() {
+		return scorecardDefinition;
+	}
+
+	@Override
+	public KnowledgePackageWrapper getKnowledgePackageWrapper() {
+		return knowledgePackageWrapper;
 	}
 }

@@ -32,6 +32,7 @@ import com.bstek.urule.model.library.Datatype;
 import com.bstek.urule.model.rule.Library;
 import com.bstek.urule.model.rule.Rule;
 import com.bstek.urule.model.scorecard.AssignTargetType;
+import com.bstek.urule.model.scorecard.ScorecardDefinition;
 import com.bstek.urule.model.scorecard.ScoringType;
 import com.bstek.urule.runtime.KnowledgePackageWrapper;
 import com.bstek.urule.runtime.KnowledgeSession;
@@ -52,6 +53,7 @@ public class ScoreRule extends Rule{
 	private String variableName;
 	private String variableLabel;
 	private Datatype datatype;
+	private ScorecardDefinition scorecardDefinition;
 	@JsonIgnore
 	private List<Library> libraries;
 	private KnowledgePackageWrapper knowledgePackageWrapper;
@@ -97,7 +99,7 @@ public class ScoreRule extends Rule{
 		}
 		List<RowItem> items=new ArrayList<RowItem>();
 		items.addAll(rowMap.values());
-		ScorecardImpl card=new ScorecardImpl(getName(),items,isdebug);
+		ScorecardImpl card=new ScorecardImpl(getName(),items,isdebug,scorecardDefinition,knowledgePackageWrapper);
 		Object actualScore=null;
 		if(scoringType.equals(ScoringType.sum)){
 			actualScore=card.executeSum(context);
@@ -202,5 +204,13 @@ public class ScoreRule extends Rule{
 	public void setKnowledgePackageWrapper(
 			KnowledgePackageWrapper knowledgePackageWrapper) {
 		this.knowledgePackageWrapper = knowledgePackageWrapper;
+	}
+
+	public ScorecardDefinition getScorecardDefinition() {
+		return scorecardDefinition;
+	}
+
+	public void setScorecardDefinition(ScorecardDefinition scorecardDefinition) {
+		this.scorecardDefinition = scorecardDefinition;
 	}
 }
