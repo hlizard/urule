@@ -18,9 +18,11 @@ package com.bstek.urule.model.scorecard;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.bstek.urule.model.library.Datatype;
 import com.bstek.urule.model.rule.Library;
+import com.bstek.urule.model.rule.Rule;
 
 /**
  * @author Jacky.gao
@@ -59,6 +61,7 @@ public class ScorecardDefinition {
 	private List<CustomCol> customCols;
 	private List<AttributeRow> rows;
 	private List<Library> libraries;
+	private Map<Integer, Rule> ruleDict;
 	
 	
 	public String getName() {
@@ -222,5 +225,13 @@ public class ScorecardDefinition {
 	}
 	public void setCells(List<CardCell> cells) {
 		this.cells = cells;
+	}
+
+	public Map<Integer, Rule> getRuleDict() {
+		return ruleDict;
+	}
+
+	public void setRuleDict(Map<Integer, Rule> ruleDict) {
+		this.ruleDict = ruleDict;
 	}
 }

@@ -16,7 +16,9 @@
 package com.bstek.urule.builder.resource;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.dom4j.Element;
 
@@ -84,10 +86,12 @@ public class ScorecardResourceBuilder implements ResourceBuilder<ScoreRule> {
 		List<CustomCol> customCols=scorecard.getCustomCols();
 		String attributeVariableCategory=scorecard.getAttributeColVariableCategory();
 		List<Rule> rules=new ArrayList<Rule>();
+		Map<Integer, Rule> ruleDict = new Hashtable<Integer, Rule>();
 		for(AttributeRow row:rows){
 			List<ConditionRow> conditionRows=row.getConditionRows();
 			int attributeRowNumber=row.getRowNumber();
 			Rule rule = buildRule(cells, customCols,attributeVariableCategory, attributeRowNumber,attributeRowNumber);
+			ruleDict.put(attributeRowNumber, rule);
 			rules.add(rule);
 			rule.setDebug(scorecard.getDebug());
 			for(ConditionRow conditionRow:conditionRows){
@@ -95,8 +99,10 @@ public class ScorecardResourceBuilder implements ResourceBuilder<ScoreRule> {
 				Rule r = buildRule(cells,customCols,attributeVariableCategory,attributeRowNumber,conditionRowNumber);
 				r.setDebug(scorecard.getDebug());
 				rules.add(r);
+				ruleDict.put(conditionRowNumber, r);
 			}
 		}
+		scorecard.setRuleDict(ruleDict);
 		rulesRebuilder.rebuildRules(scorecard.getLibraries(), rules);
 		ResourceLibrary resourceLibrary=resourceLibraryBuilder.buildResourceLibrary(scorecard.getLibraries());
 		Rete rete=reteBuilder.buildRete(rules, resourceLibrary);
