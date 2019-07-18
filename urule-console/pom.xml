@@ -105,6 +105,19 @@
 	    <artifactId>poi-ooxml</artifactId>
 	    <version>3.16</version>
 	</dependency>
+
+	  <!-- commons-compress开始 -->
+	  <dependency>
+		  <groupId>org.apache.commons</groupId>
+		  <artifactId>commons-compress</artifactId>
+		  <version>1.18</version>
+	  </dependency>
+	  <dependency>
+		  <groupId>org.tukaani</groupId>
+		  <artifactId>xz</artifactId>
+		  <version>1.8</version>
+	  </dependency>
+	  <!-- commons-compress结束 -->
   </dependencies>
 	<licenses>
 		<license>

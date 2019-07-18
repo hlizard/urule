@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.bstek.urule.console.servlet.frame;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +34,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.compress.compressors.CompressorInputStream;
+import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
+import org.apache.commons.compress.compressors.xz.XZCompressorOutputStream;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -123,6 +127,7 @@ public class FrameServletHandler extends RenderPageServletHandler{
 		ServletFileUpload upload = new ServletFileUpload(factory);
 		InputStream inputStream=null;
 		boolean overwriteProject=true;
+		String fileType = ".xz";
 		List<FileItem> items = upload.parseRequest(req);
 		if(items.size()==0){
 			throw new ServletException("Upload file is invalid.");
@@ -134,9 +139,23 @@ public class FrameServletHandler extends RenderPageServletHandler{
 				overwriteProject=Boolean.valueOf(overwriteProjectStr);
 			}else if(name.equals("file")){
 				inputStream=item.getInputStream();
+			}else if(name.equals("fileType")) {
+				fileType = new String(item.get());
 			}
 		}
-		repositoryService.importXml(inputStream,overwriteProject);
+		if(fileType!=null) {
+			CompressorInputStream cin = null;
+			switch(fileType) {
+				case ".xz":
+					cin = new XZCompressorInputStream(inputStream);
+					break;
+				default:
+					throw new Exception("import "+fileType+" not implemented!");
+			}
+			repositoryService.importXml(cin,overwriteProject);
+		} else {
+			repositoryService.importXml(inputStream,overwriteProject);
+		}
 		IOUtils.closeQuietly(inputStream);
 		resp.sendRedirect(req.getContextPath()+"/urule/frame");
 	}
@@ -378,11 +397,11 @@ public class FrameServletHandler extends RenderPageServletHandler{
 		}
 		SimpleDateFormat sd=new SimpleDateFormat("yyyyMMddHHmmss");
 		String projectName=projectPath.substring(1,projectPath.length());
-		String filename=projectName+"-urule-repo-"+sd.format(new Date())+".bak";
+		String filename=projectName+"-urule-repo-"+sd.format(new Date())+".bak.xz";
 		resp.setContentType("application/octet-stream");
 		resp.setHeader("Content-Disposition", "attachment; filename=\"" + new String(filename.getBytes("utf-8"),"iso-8859-1") + "\"");
 		resp.setHeader("content-type", "application/octet-stream");
-		OutputStream outputStream=resp.getOutputStream();
+		OutputStream outputStream=new XZCompressorOutputStream(resp.getOutputStream());
 		repositoryService.exportXml(projectPath,outputStream);
 		outputStream.flush();
 		outputStream.close();
