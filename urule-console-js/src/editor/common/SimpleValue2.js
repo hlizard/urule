@@ -25,7 +25,19 @@ urule.SimpleValue=function(arithmetic,data){
                             var jsval = eval(text);
                         //}
                         err = null;
-                        alert(jsval);
+                        console.log('结果：'+jsval);
+
+                        $.post(window._server.replace('/urule', '')+'/rule2/tool/test/js', {gs: text, fh: null}, function(data){
+                            if(data.status) {
+                                console.log('服务器端执行结果：'+data.data);
+                                alert(data.data);
+                                console.assert(jsval===data.data);
+                            } else {
+                                console.log('服务器端执行出错：'+data.info);
+                                alert('执行出错：'+data.info);
+                            }
+                        });
+                        //alert(jsval);
                     } catch(e) {
                         err = e;
                         if(e.message.indexOf(' is not defined') > 0){
@@ -37,9 +49,19 @@ urule.SimpleValue=function(arithmetic,data){
                             //context[varname] = prompt("请输入变量"+varname+"的值进行测试","");
 
                             var pretext = 'var ' + varname + '=';
-                            var prompttext = prompt("请输入变量"+varname+"的值进行测试","");
-                            pretext += 'eval("+\''+prompttext+'\'||\''+prompttext+'\'");\n';
-                            text = pretext + text;
+                            var prompttext = $.trim(prompt("请输入变量"+varname+"的值进行测试",""));
+                            if(prompttext=='null' || prompttext=='undefined'
+                            ||(prompttext.length>1 && prompttext[0]=="'" && prompttext[prompttext.length-1]=="'")){
+                                pretext += prompttext;
+                            } else {
+                                if(varname[varname.length-1] == '$')
+                                    pretext += "'"+prompttext+"'";
+                                else
+                                    //pretext += 'eval("+\''+prompttext+'\'||\''+prompttext+'\'");\n';
+                                    pretext += prompttext!='NaN'&&isNaN(+prompttext)?"'"+prompttext+"'":+prompttext;
+                            }
+                            text = pretext+';\n' + text;
+                            console.log('执行语句：'+text);
                         } else {
                             alert('测试js表达式出错：'+e.message);
                             err = null;
