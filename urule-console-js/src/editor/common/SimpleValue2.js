@@ -50,12 +50,13 @@ urule.SimpleValue=function(arithmetic,data){
 
                             var pretext = 'var ' + varname + '=';
                             var prompttext = $.trim(prompt("请输入变量"+varname+"的值进行测试",""));
-                            if(prompttext=='null' || prompttext=='undefined'
-                            ||(prompttext.length>1 && prompttext[0]=="'" && prompttext[prompttext.length-1]=="'")){
+                            if(prompttext == '' || prompttext=='null' || prompttext=='undefined'){
+                                pretext += "''";
+                            } else if (prompttext.length>1 && prompttext[0]=="'" && prompttext[prompttext.length-1]=="'"){
                                 pretext += prompttext;
                             } else {
                                 if(varname[varname.length-1] == '$')
-                                    pretext += "'"+prompttext+"'";
+                                    pretext += "'"+prompttext.replace("'", "\'")+"'";
                                 else
                                     //pretext += 'eval("+\''+prompttext+'\'||\''+prompttext+'\'");\n';
                                     pretext += prompttext!='NaN'&&isNaN(+prompttext)?"'"+prompttext+"'":+prompttext;
