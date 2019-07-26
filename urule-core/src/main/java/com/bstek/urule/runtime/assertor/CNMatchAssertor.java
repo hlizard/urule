@@ -23,6 +23,7 @@ import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.tools.shell.Global;
 import org.mozilla.javascript.tools.shell.Main;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
@@ -54,13 +55,22 @@ public class CNMatchAssertor implements Assertor {
 		if(cx == null) {
 			System.out.println("new cx!");
 	        cx = Context.enter();
+	        jscontextHolder.set(cx);
+	        String rhinoVersion = cx.getImplementationVersion();
+	        System.out.println("rhinoVersion:"+rhinoVersion);
+		}
+		if(scope == null) {
 	        scope = new Global(cx);
 	        cx.setOptimizationLevel(-1);
-	        cx.setLanguageVersion(Context.VERSION_1_7);
-	        Main.processFile(cx, scope, dir + "envjs/env.rhino.js");
-	        Main.processFile(cx, scope, dir + "envjs/jquery.js");
-	        Main.processFile(cx, scope, dir + "envjs/moment.min.js");
-	        jscontextHolder.set(cx);
+	        cx.setLanguageVersion(200);	//即VERSION_ES6
+	        try {
+				Main.processFile(cx, scope, dir + "envjs/env.rhino.js");
+		        Main.processFile(cx, scope, dir + "envjs/jquery.js");
+		        Main.processFile(cx, scope, dir + "envjs/moment.min.js");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
