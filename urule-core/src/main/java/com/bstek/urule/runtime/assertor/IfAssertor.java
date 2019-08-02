@@ -28,6 +28,8 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;*/
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.JavaScriptException;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.tools.shell.Global;
 import org.mozilla.javascript.tools.shell.Main;
 
@@ -38,34 +40,60 @@ import org.mozilla.javascript.tools.shell.Main;
 public class IfAssertor implements Assertor {
 	
 	private Context cx;
-	private Global scope;
+	//private Global scope;
+	private static ScriptableObject sharedScope;
 	static URL  dir;
 	static {
         dir = IfAssertor.class.getResource("/");	//TODO:当前部署时需自行部署envjs到classes目录下
 	}
 	private static ThreadLocal<Context> jscontextHolder = new ThreadLocal<Context>();
 	
-	private void init() {
+	private Scriptable init() {
 		cx = jscontextHolder.get();
 		if(cx == null) {
 			System.out.println("new cx!");
 	        cx = Context.enter();
-	        jscontextHolder.set(cx);
-	        String rhinoVersion = cx.getImplementationVersion();
-	        System.out.println("rhinoVersion:"+rhinoVersion);
-		}
-		if(scope == null) {
-	        scope = new Global(cx);
 	        cx.setOptimizationLevel(-1);
 	        cx.setLanguageVersion(200);	//即VERSION_ES6
+	        
+	        if (sharedScope == null) {
+//	        	sharedScope = cx.initStandardObjects();
+//	        	//sharedScope = cx.initStandardObjects(null, true);	//密封所有标准库对象
+	        	//使用cx.initStandardObjects();会出现org.mozilla.javascript.EcmaError: ReferenceError: "print" is not defined. (file:/E:/MyCode/workspace-sts-3.9.5.RELEASE/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/morpho/WEB-INF/classes/envjs/env.rhino.js#1856)
+	        	sharedScope = new Global(cx);
+	        }
 	        try {
-				Main.processFile(cx, scope, dir + "envjs/env.rhino.js");
-		        Main.processFile(cx, scope, dir + "envjs/jquery.js");
-		        Main.processFile(cx, scope, dir + "envjs/moment.min.js");
+				Main.processFile(cx, sharedScope, dir + "envjs/env.rhino.js");	//Caused by: java.lang.StackOverflowError
+		        Main.processFile(cx, sharedScope, dir + "envjs/jquery.js");
+		        Main.processFile(cx, sharedScope, dir + "envjs/moment.min.js");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			cx.evaluateString(sharedScope, "var _s_obj = {};", "js_sharedScope_init", 1, null);	//_s_obj将用于跨表达式传值
+//			// Force the LiveConnect stuff to be loaded. 
+//			String loadMe = "RegExp; getClass; java; Packages; JavaAdapter;";
+//			cx.evaluateString(sharedScope , loadMe, "lazyLoad", 0, null);
+//	        sharedScope.sealObject();	//密封共享范围本身
+	        //org.mozilla.javascript.EvaluatorException: Cannot modify a property of a sealed object: Envjs. (file:/E:/MyCode/WJRE/morpho/target/classes/envjs/env.rhino.js#8)
+	        
+	        jscontextHolder.set(cx);
+	        String rhinoVersion = cx.getImplementationVersion();
+	        System.out.println("rhinoVersion:"+rhinoVersion);
+		}
+//		if(scope == null) {
+//	        scope = new Global(cx);
+//		}
+		Scriptable newScope = cx.newObject(sharedScope);
+		newScope.setPrototype(sharedScope);
+		newScope.setParentScope(null);
+		return newScope;
+	}
+	
+	protected void finalize( )
+	{
+		if (cx!=null) {
+			cx.exit();
 		}
 	}
 
@@ -87,8 +115,8 @@ public class IfAssertor implements Assertor {
 		}*/
 		Object o = null;
 		try {
-			init();	//每次都得调用，避免java.lang.RuntimeException: No Context associated with current Thread
-			o = cx.evaluateString(scope, tj, "js", 1, null);
+			Scriptable scope = init();	//每次都得调用，避免java.lang.RuntimeException: No Context associated with current Thread
+			o = cx.evaluateString(scope, tj, "js_IfAssertor", 1, null);
 		} catch (JavaScriptException e) {
 			//throw new Exception("", e);
 			System.err.println("布尔表达式(js表达式)\"" + tj + "\"计算出错:" + e.getMessage());
