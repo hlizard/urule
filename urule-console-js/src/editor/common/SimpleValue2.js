@@ -50,7 +50,9 @@ urule.SimpleValue=function(arithmetic,data){
 
                             var pretext = 'var ' + varname + '=';
                             var prompttext = $.trim(prompt("请输入变量"+varname+"的值进行测试",""));
-                            if(prompttext=='null' || prompttext=='undefined'
+                            if((prompttext.startsWith('{') && prompttext.endsWith('}')) || (prompttext.startsWith('[') && prompttext.endsWith(']'))) {  //json
+                                pretext += prompttext;
+                            } else if(prompttext=='null' || prompttext=='undefined'
                             ||(prompttext.length>1 && prompttext[0]=="'" && prompttext[prompttext.length-1]=="'")){
                                 pretext += prompttext;
                             } else {

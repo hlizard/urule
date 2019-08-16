@@ -70,6 +70,7 @@ public class CNMatchAssertor implements Assertor {
 	        try {
 				Main.processFile(cx, sharedScope, dir + "envjs/env.rhino.js");	//Caused by: java.lang.StackOverflowError
 		        Main.processFile(cx, sharedScope, dir + "envjs/jquery.js");
+		        Main.processFile(cx, sharedScope, dir + "envjs/jquery.linq.min.js");
 		        Main.processFile(cx, sharedScope, dir + "envjs/moment.min.js");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
