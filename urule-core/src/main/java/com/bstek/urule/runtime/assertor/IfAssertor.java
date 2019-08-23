@@ -37,7 +37,7 @@ import org.mozilla.javascript.tools.shell.Main;
  * @author Jacky.gao
  * @since 2015年1月6日
  */
-public class IfAssertor implements Assertor {
+public class IfAssertor extends AbstractDebugAssertor {
 	
 	private Context cx;
 	//private Global scope;
@@ -51,7 +51,7 @@ public class IfAssertor implements Assertor {
 	private Scriptable init() {
 		cx = jscontextHolder.get();
 		if(cx == null) {
-			System.out.println("new cx!");
+			console.println("new cx!");
 	        cx = Context.enter();
 	        cx.setOptimizationLevel(-1);
 	        cx.setLanguageVersion(200);	//即VERSION_ES6
@@ -80,7 +80,7 @@ public class IfAssertor implements Assertor {
 	        
 	        jscontextHolder.set(cx);
 	        String rhinoVersion = cx.getImplementationVersion();
-	        System.out.println("rhinoVersion:"+rhinoVersion);
+	        console.println("rhinoVersion:"+rhinoVersion);
 		}
 //		if(scope == null) {
 //	        scope = new Global(cx);
@@ -111,7 +111,7 @@ public class IfAssertor implements Assertor {
 			o = engine.eval(tj);
 		} catch (ScriptException e) {
 			//throw new Exception("", e);
-			System.err.println("布尔表达式\"" + tj + "\"计算出错:" + e.getMessage());
+			console_err.println("布尔表达式\"" + tj + "\"计算出错:" + e.getMessage());
 			e.printStackTrace();
 		}*/
 		Object o = null;
@@ -120,7 +120,7 @@ public class IfAssertor implements Assertor {
 			o = cx.evaluateString(scope, tj, "js_IfAssertor", 1, null);
 		} catch (JavaScriptException e) {
 			//throw new Exception("", e);
-			System.err.println("布尔表达式(js表达式)\"" + tj + "\"计算出错:" + e.getMessage());
+			console_err.println("布尔表达式(js表达式)\"" + tj + "\"计算出错:" + e.getMessage());
 			e.printStackTrace();
 		}
 		Boolean b = null;
@@ -130,7 +130,7 @@ public class IfAssertor implements Assertor {
 			b = Boolean.parseBoolean(o.toString());
 		}
 
-		System.out.println("布尔表达式(js表达式)\"" + tj + "\"计算结果:" + b);
+		console.println("布尔表达式(js表达式)\"" + tj + "\"计算结果:" + b);
 		return b.booleanValue();
 	}
 

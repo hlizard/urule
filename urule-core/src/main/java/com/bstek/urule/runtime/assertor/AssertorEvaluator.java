@@ -15,6 +15,10 @@
  ******************************************************************************/
 package com.bstek.urule.runtime.assertor;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 import org.springframework.beans.BeansException;
@@ -22,8 +26,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import com.bstek.urule.RuleException;
+import com.bstek.urule.debug.MsgType;
 import com.bstek.urule.model.library.Datatype;
 import com.bstek.urule.model.rule.Op;
+import com.bstek.urule.runtime.rete.EvaluationContext;
 
 /**
  * @author Jacky.gao
@@ -32,7 +38,7 @@ import com.bstek.urule.model.rule.Op;
 public class AssertorEvaluator implements ApplicationContextAware{
 	public static final String BEAN_ID="urule.assertorEvaluator";
 	private Collection<Assertor> assertors;
-	public boolean evaluate(Object left,Object right,Datatype datatype,Op op){
+	public boolean evaluate(Object left,Object right,Datatype datatype,Op op,EvaluationContext context){
 		Assertor targetAssertor=null;
 		for(Assertor assertor:assertors){
 			if(assertor.support(op)){
@@ -42,6 +48,24 @@ public class AssertorEvaluator implements ApplicationContextAware{
 		}
 		if(targetAssertor==null){
 			throw new RuleException("Unsupport op:"+op);
+		}
+		if(targetAssertor instanceof IDebugAssertor) {
+			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			PrintStream console=null;
+			try {
+				console = new PrintStream(baos, true, "UTF-8");
+				return ((IDebugAssertor)targetAssertor).evalDebug(left, right,datatype, console, console);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				if(console!=null) {
+					String info="$$$断言Debug：";
+					String data = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+					String msg=info+data;
+					context.debugMsg(msg, MsgType.ExecuteBeanMethod, true);
+				}
+			}
 		}
 		return targetAssertor.eval(left, right,datatype);
 	}

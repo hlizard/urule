@@ -42,7 +42,7 @@ import javax.script.ScriptException;*/
  * @author Jacky.gao
  * @since 2015年1月6日
  */
-public class CNMatchAssertor implements Assertor {
+public class CNMatchAssertor extends AbstractDebugAssertor {
 	
 	private Context cx;
 	//private Global scope;
@@ -56,7 +56,7 @@ public class CNMatchAssertor implements Assertor {
 	private Scriptable init() {
 		cx = jscontextHolder.get();
 		if(cx == null) {
-			System.out.println("new cx!");
+			console.println("new cx!");
 	        cx = Context.enter();
 	        cx.setOptimizationLevel(-1);
 	        cx.setLanguageVersion(200);	//即VERSION_ES6
@@ -85,7 +85,7 @@ public class CNMatchAssertor implements Assertor {
 	        
 	        jscontextHolder.set(cx);
 	        String rhinoVersion = cx.getImplementationVersion();
-	        System.out.println("rhinoVersion:"+rhinoVersion);
+	        console.println("rhinoVersion:"+rhinoVersion);
 		}
 //		if(scope == null) {
 //	        scope = new Global(cx);
@@ -124,7 +124,7 @@ public class CNMatchAssertor implements Assertor {
 
 		} else {
 			if(tj.equals(left)){
-				System.out.println("\""+left+"\"匹配\""+tj+"\"");
+				console.println("\""+left+"\"匹配\""+tj+"\"");
 				return true;
 			} else if("true".equals(left)) {
 				switch(tj) {	//肯定答案
@@ -133,10 +133,10 @@ public class CNMatchAssertor implements Assertor {
 					case "存在":
 					case "通过":
 					case "有":
-						System.out.println("\""+left+"\"匹配\""+tj+"\"");
+						console.println("\""+left+"\"匹配\""+tj+"\"");
 						return true;
 					default:
-						System.out.println("\""+left+"\"不匹配\""+tj+"\"");
+						console.println("\""+left+"\"不匹配\""+tj+"\"");
 						return false;
 				}
 			} else if("false".equals(left)) {
@@ -148,10 +148,10 @@ public class CNMatchAssertor implements Assertor {
 					case "不通过":
 					case "无":
 					case "没有":
-						System.out.println("\""+left+"\"匹配\""+tj+"\"");
+						console.println("\""+left+"\"匹配\""+tj+"\"");
 						return true;
 					default:
-						System.out.println("\""+left+"\"不匹配\""+tj+"\"");
+						console.println("\""+left+"\"不匹配\""+tj+"\"");
 						return false;
 				}
 			} else {
@@ -383,29 +383,29 @@ public class CNMatchAssertor implements Assertor {
 				o = engine.eval(tj);
 			} catch (ScriptException e) {
 				//throw new Exception("", e);
-				System.err.println("布尔表达式\"" + tj + "\"计算出错:" + e.getMessage());
+				console_err.println("布尔表达式\"" + tj + "\"计算出错:" + e.getMessage());
 				e.printStackTrace();
 			}*/
 		Object o = null;
 		try {
 //			init();	//每次都得调用，避免java.lang.RuntimeException: No Context associated with current Thread
 //			if(scope==null) {
-//				System.err.println("scope为空！");
+//				console_err.println("scope为空！");
 //				scope = new Global(cx);
 //			}
 			Scriptable scope = init();
 			o = cx.evaluateString(scope, tj, "js_CNMatchAssertor", 1, null);
 		} catch (Exception e) {
-			System.err.println("参数\""+left+"\", 表达式\"" + right + "\" => 布尔表达式(js表达式)\"" + tj + "\"计算出错:" + e.getMessage());
+			console_err.println("参数\""+left+"\", 表达式\"" + right + "\" => 布尔表达式(js表达式)\"" + tj + "\"计算出错:" + e.getMessage());
 			throw e;
 		}
 		if(o==null) {
-			System.err.println("警告：参数\""+left+"\", 表达式\"" + right + "\" => 布尔表达式(js表达式)\"" + tj + "\"计算结果为null！");
+			console_err.println("警告：参数\""+left+"\", 表达式\"" + right + "\" => 布尔表达式(js表达式)\"" + tj + "\"计算结果为null！");
 			return false;
 		}
 		boolean b = Boolean.parseBoolean(o.toString());
 
-		System.out.println("参数\""+left+"\", 表达式\"" + right + "\" => 布尔表达式(js表达式)\"" + tj + "\"计算结果:" + b);
+		console.println("参数\""+left+"\", 表达式\"" + right + "\" => 布尔表达式(js表达式)\"" + tj + "\"计算结果:" + b);
 		return b;
 	}
 

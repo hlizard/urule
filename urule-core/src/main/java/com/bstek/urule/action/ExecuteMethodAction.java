@@ -15,8 +15,12 @@
  ******************************************************************************/
 package com.bstek.urule.action;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,9 +52,12 @@ public class ExecuteMethodAction extends AbstractAction {
 		try{
 			Object obj=context.getApplicationContext().getBean(beanId);
 			java.lang.reflect.Method method=null;
+			java.lang.reflect.Field field_console = null;
+			java.lang.reflect.Field field_console_err = null;
 			if(parameters!=null && parameters.size()>0){
 				ParametersWrap wrap=buildParameterClasses(context,matchedObject,allMatchedObjects,variableMap);
 				Method[] methods=obj.getClass().getMethods();
+				Field[] fields=obj.getClass().getFields();
 				Datatype[] targetDatatypes=wrap.getDatatypes();
 				boolean match=false;
 				for(Method m:methods){
@@ -83,10 +90,42 @@ public class ExecuteMethodAction extends AbstractAction {
 				if(actionId!=null){
 					valueKey=actionId.value();
 				}
-				Object value=method.invoke(obj, wrap.getValues());
-				if(debug && Utils.isDebug()){
-					String msg=info+"("+wrap.valuesToString()+")";
-					context.debugMsg(msg, MsgType.ExecuteBeanMethod, debug);
+				for(Field d:fields) {
+					if(d.getName().equals("console")) {
+						field_console=d;
+					} else if(d.getName().equals("console_err")) {
+						field_console_err=d;
+					}
+				}
+				Object value=null;
+				PrintStream console = null;
+				try {
+					final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					console = new PrintStream(baos, true, "UTF-8");
+					if(field_console!=null) {
+						field_console.set(obj, console);
+					}
+					if(field_console_err!=null) {
+						field_console_err.set(obj, console);
+					}
+					value=method.invoke(obj, wrap.getValues());
+					//if(debug && Utils.isDebug())
+					{
+						String msg=info+"("+wrap.valuesToString()+")";
+						String data = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+						msg+=data;
+						context.debugMsg(msg, MsgType.ExecuteBeanMethod, true);
+					}
+				}finally{
+					if(field_console!=null) {
+						field_console.set(obj, System.out);
+					}
+					if(field_console_err!=null) {
+						field_console_err.set(obj, System.err);
+					}
+					if(console!=null) {
+						console.close();
+					}
 				}
 				if(value!=null){
 					return new ActionValueImpl(valueKey,value);					

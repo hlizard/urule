@@ -105,7 +105,7 @@ public class Criteria extends BaseCriterion implements BaseCriteria{
 			}
 		}
 		AssertorEvaluator assertorEvaluator=context.getAssertorEvaluator();
-		boolean result=assertorEvaluator.evaluate(leftResult, right, datatype,op);
+		boolean result=assertorEvaluator.evaluate(leftResult, right, datatype,op,context);
 		response.setResult(result);
 		return response;
 	}

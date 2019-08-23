@@ -71,12 +71,17 @@ public class ContextImpl implements Context {
 		if(!Utils.isDebug() || !enableDebug){
 			return;
 		}
-		if(!Utils.isDebugToFile()){
-			System.out.println(msg);
+		if(msg != null && debugMessageItems.size() >= 2 && (debugMessageItems.get(debugMessageItems.size()-1).getMsg().equals(msg)	//REHelper输出日志去重临时办法（$$$执行动作：和$$$断言Debug：会交替出现）
+				|| debugMessageItems.get(debugMessageItems.size()-2).getMsg().equals(msg)
+				|| msg.startsWith("$$$执行动作：规则助手保存规则结果"))) {	//太长、无用
 			return;
 		}
 		MessageItem item=new MessageItem(msg,type);
-		debugMessageItems.add(item);		
+		debugMessageItems.add(item);	//System.out.println总是输出到日志文件
+		if(!Utils.isDebugToFile()){
+			System.out.println(msg);
+			return;
+		}		
 	}
 	
 	@Override
