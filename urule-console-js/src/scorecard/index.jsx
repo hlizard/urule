@@ -36,7 +36,7 @@ import '../editor/common/MethodValue.js';
 import '../editor/common/FunctionProperty.js';
 import '../editor/common/FunctionParameter.js';
 import '../editor/common/FunctionValue.js';
-import '../editor/common/SimpleValue.js';
+import '../editor/common/SimpleValue2.js';
 
 import '../editor/urule/ConfigActionDialog.js';
 import '../editor/urule/ConfigConstantDialog.js';

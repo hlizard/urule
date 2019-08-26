@@ -44,7 +44,7 @@ import '../common/MethodValue.js';
 import '../common/FunctionProperty.js';
 import '../common/FunctionParameter.js';
 import '../common/FunctionValue.js';
-import '../common/SimpleValue.js';
+import '../common/SimpleValue2.js';
 import './Condition.js';
 import './CellCondition.js';
 import './CellContent.js';

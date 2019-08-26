@@ -63,6 +63,29 @@ public class ContextImpl implements Context {
 	
 	@Override
 	public Object parseExpression(String expression) {
+    	if(expression!=null 
+				&& ((expression.indexOf('{')>=0 && expression.indexOf('}')>0)
+				|| (expression.indexOf('[')>=0 && expression.indexOf(']')>0))) {	//json
+			try {
+				String jsexpression = expression
+						.replace("\"{", "'{").replace("\"[", "'[")
+						.replace("}\"", "}'").replace("]\"", "]'")
+						.replace("\n", "").replace("\r", "");
+//				String jsexpression = expression
+//						.replace("\"{", "`{").replace("\"[", "`[")
+//						.replace("}\"", "}`").replace("]\"", "]`");	//使用ES6语法
+	    		Object obj=this.getApplicationContext().getBean("reHelper");	//TODO：循环依赖了
+	    		java.lang.reflect.Method method=obj.getClass().getMethod("ExecExpr", String.class, Object.class);
+	    		String[] parr = new String[2];
+	    		parr[0]=jsexpression;
+	    		parr[1]=null;
+	    		Object value= method.invoke(obj, parr);
+	    		return value==null?value:value.toString();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
 		return elCalculator.eval(expression);
 	}
 	
@@ -73,7 +96,8 @@ public class ContextImpl implements Context {
 		}
 		if(msg != null && debugMessageItems.size() >= 2 && (debugMessageItems.get(debugMessageItems.size()-1).getMsg().equals(msg)	//REHelper输出日志去重临时办法（$$$执行动作：和$$$断言Debug：会交替出现）
 				|| debugMessageItems.get(debugMessageItems.size()-2).getMsg().equals(msg)
-				|| msg.startsWith("$$$执行动作：规则助手保存规则结果"))) {	//太长、无用
+				|| msg.startsWith("$$$执行动作：规则助手保存规则结果")	//太长、无用
+				|| (msg.startsWith("^^^条件：[变量]数据源.rule_data_dict_def表的field字段【等于】[常量]") && msg.indexOf(" =>不满足")>0))) {	//前置计算去除 =>不满足的输出
 			return;
 		}
 		MessageItem item=new MessageItem(msg,type);

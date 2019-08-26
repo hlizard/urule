@@ -27,7 +27,7 @@ urule.SimpleValue=function(arithmetic,data){
                         err = null;
                         console.log('结果：'+jsval);
 
-                        if(!text.startsWith('var ') && typeof(x) !== 'undefined'){  //若已在浏览器控制台定义了x，避免发送到服务器端的js没有此定义
+                        if(!text.startsWith('var x=') && typeof(x) !== 'undefined'){  //若已在浏览器控制台定义了x，避免发送到服务器端的js没有此定义
                             console.log('x is defined, JSON.stringify...');
                             text = 'var x='+JSON.stringify(x)+';\n'+text;
                             console.log(text);
