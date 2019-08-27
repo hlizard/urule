@@ -342,6 +342,17 @@ class ParametersWrap{
 		for(Object obj:values){
 			if(sb.length()>0){
 				sb.append(",");
+				
+				//长json剪断显示
+				String tj=obj==null?"null":obj.toString();
+				int ibegin = tj.indexOf('{');
+				int iend = tj.lastIndexOf('}');
+				String printtj = tj;
+				if(ibegin>=0 && iend-ibegin>1000) {
+					printtj = tj.substring(0, ibegin+200)+" \t略...\t "+tj.substring(iend-200);
+					sb.append(printtj);
+					continue;
+				}
 			}
 			if(obj==null){
 				sb.append("null");
