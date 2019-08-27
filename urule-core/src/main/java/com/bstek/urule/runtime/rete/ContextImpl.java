@@ -97,7 +97,8 @@ public class ContextImpl implements Context {
 		if(msg != null && debugMessageItems.size() >= 2 && (debugMessageItems.get(debugMessageItems.size()-1).getMsg().equals(msg)	//REHelper输出日志去重临时办法（$$$执行动作：和$$$断言Debug：会交替出现）
 				|| debugMessageItems.get(debugMessageItems.size()-2).getMsg().equals(msg)
 				|| msg.startsWith("$$$执行动作：规则助手保存规则结果")	//太长、无用
-				|| (msg.startsWith("^^^条件：[变量]数据源.rule_data_dict_def表的field字段【等于】[常量]") && msg.indexOf(" =>不满足")>0))) {	//前置计算去除 =>不满足的输出
+				|| (msg.startsWith("^^^条件：[变量]数据源.rule_data_dict_def表的field字段【等于】[常量]") && msg.indexOf(" =>不满足")>0)
+				|| (msg.startsWith("^^^条件：[变量]数据源.客户ID") && msg.indexOf(" =>不满足")>0))) {	//前置计算去除 =>不满足的输出
 			return;
 		}
 		MessageItem item=new MessageItem(msg,type);
