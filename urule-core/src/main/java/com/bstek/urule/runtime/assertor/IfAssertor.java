@@ -18,6 +18,7 @@ package com.bstek.urule.runtime.assertor;
 import com.bstek.urule.model.library.Datatype;
 import com.bstek.urule.model.rule.Op;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -32,6 +33,9 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.tools.shell.Global;
 import org.mozilla.javascript.tools.shell.Main;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.ServletContext;
 
 /**
  * @author Jacky.gao
@@ -42,13 +46,19 @@ public class IfAssertor extends AbstractDebugAssertor {
 	private Context cx;
 	//private Global scope;
 	private static ScriptableObject sharedScope;
-	static URL  dir;
-	static {
-        dir = IfAssertor.class.getResource("/");	//TODO:当前部署时需自行部署envjs到classes目录下
-	}
+//	static URL  dir;
+//	static {
+//        dir = IfAssertor.class.getResource("/");	//TODO:当前部署时需自行部署envjs到classes目录下
+//	}
+	@Autowired
+	private ServletContext servletContext;
+	static String  dir;
 	private static ThreadLocal<Context> jscontextHolder = new ThreadLocal<Context>();
 	
 	private Scriptable init() {
+		if (dir==null)
+			dir = servletContext.getRealPath(File.separator)+File.separator;
+
 		cx = jscontextHolder.get();
 		if(cx == null) {
 			console.println("new cx!");

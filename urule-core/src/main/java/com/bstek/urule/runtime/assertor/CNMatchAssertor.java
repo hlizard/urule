@@ -24,7 +24,10 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.tools.shell.Global;
 import org.mozilla.javascript.tools.shell.Main;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.servlet.ServletContext;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -47,13 +50,19 @@ public class CNMatchAssertor extends AbstractDebugAssertor {
 	private Context cx;
 	//private Global scope;
 	private static ScriptableObject sharedScope;
-	static URL  dir;
-	static {
-        dir = CNMatchAssertor.class.getResource("/");	//TODO:当前部署时需自行部署envjs到classes目录下
-	}
+//	static URL  dir;
+//	static {
+//        dir = CNMatchAssertor.class.getResource("/");	//TODO:当前部署时需自行部署envjs到classes目录下
+//	}
+	@Autowired
+	private ServletContext servletContext;
+	static String  dir;
 	private static ThreadLocal<Context> jscontextHolder = new ThreadLocal<Context>();
 	
 	private Scriptable init() {
+		if (dir==null)
+			dir = servletContext.getRealPath(File.separator)+File.separator;
+
 		cx = jscontextHolder.get();
 		if(cx == null) {
 			console.println("new cx!");
