@@ -47,7 +47,7 @@ public class PropertyCriteria {
 		}
 		AssertorEvaluator assertorEvaluator=context.getAssertorEvaluator();
 		Datatype datatype=Utils.getDatatype(left);
-		boolean result=assertorEvaluator.evaluate(left, right, datatype,op);
+		boolean result=assertorEvaluator.evaluate(left, right, datatype,op,context);
 		return result;
 	}
 	public String getProperty() {

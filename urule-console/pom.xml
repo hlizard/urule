@@ -14,7 +14,7 @@
   		<artifactId>urule-core</artifactId>
   		<version>2.1.5-SNAPSHOT</version>
         <scope>system</scope>
-        <systemPath>${project.basedir}/lib/urule-core-2.1.5-SNAPSHOT.jar</systemPath>
+		<systemPath>${project.basedir}/../../urule/urule-core/target/urule-core-2.1.5-SNAPSHOT.jar</systemPath>
   	</dependency>
 	  <dependency>
 		  <groupId>org.antlr</groupId>
