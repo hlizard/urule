@@ -14,7 +14,7 @@
   		<artifactId>urule-core</artifactId>
   		<version>2.1.5-SNAPSHOT</version>
         <scope>system</scope>
-		<systemPath>${project.basedir}/../../urule/urule-core/target/urule-core-2.1.5-SNAPSHOT.jar</systemPath>
+		<systemPath>${project.basedir}/../../morpho/morpho/lib/urule-core-2.1.5-SNAPSHOT.jar</systemPath>
   	</dependency>
 	  <dependency>
 		  <groupId>org.antlr</groupId>
@@ -143,5 +143,17 @@
 		<url>http://www.bstek.com</url>
 	</organization>	
 	<name>URule Console Project</name>
-	<url>https://github.com/youseries/urule/tree/master/urule-console</url>    
+	<url>https://github.com/youseries/urule/tree/master/urule-console</url>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<outputDirectory>${project.basedir}/../../morpho/morpho/lib</outputDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
