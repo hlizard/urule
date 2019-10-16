@@ -50,8 +50,8 @@ I.unbind("touchmove"),I.unbind("touchend"),I.unbind("touchleave"),I.unbind("touc
             async : false   //否则无法都出全部
 
         });
-        $.ajax({url: window._server+"/frame/loadProjects", type: "POST", dataType: "text", data: {"classify":false,"projectName":"","types":""}, success: function(dstr){
-            var d = JSON.parse(dstr);
+        $.ajax({url: window._server+"/frame/loadProjects", type: "POST", dataType: "json", data: {"classify":false,"projectName":"","types":""}, success: function(d){
+            //var d = JSON.parse(dstr);
             var ddict = {};
             var z = new ZipArchive;
             console.log('正在导出项目'+d.repo.rootFile.children[0].name+', 请耐心等待...');
@@ -76,10 +76,11 @@ I.unbind("touchmove"),I.unbind("touchend"),I.unbind("touchleave"),I.unbind("touc
             };
             processANode(d.repo.rootFile.children[0].children[1]);
 
-            out = tape.append(d.repo.rootFile.children[0].name+'_集中展示.json', dstr);
-            for (var property1 in ddict) {
-              z.addFile(property1, ddict[property1]);
-            }
+            var dstr = JSON.stringify(d, null, 4);
+            //out = tape.append(d.repo.rootFile.children[0].name+'_集中展示.json', dstr);
+            //for (var property1 in ddict) {
+            //  z.addFile(property1, ddict[property1]);
+            //}
             z.addFile(d.repo.rootFile.children[0].name+'_集中展示.json', dstr);
             z.export(d.repo.rootFile.children[0].name);
             return;
