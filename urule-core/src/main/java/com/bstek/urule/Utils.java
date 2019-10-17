@@ -27,7 +27,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.beanutils.converters.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -99,6 +101,15 @@ public class Utils implements ApplicationContextAware{
 		} catch (Exception e) {
 			throw new RuleException(e);
 		}
+	}
+	static {
+		ConvertUtils.register(new LongConverter(null), Long.class);
+		ConvertUtils.register(new ShortConverter(null), Short.class);
+		ConvertUtils.register(new IntegerConverter(null), Integer.class);
+		ConvertUtils.register(new DoubleConverter(null), Double.class);
+		ConvertUtils.register(new BigDecimalConverter(null), BigDecimal.class);
+		ConvertUtils.register(new FloatConverter(null), Float.class);
+		ConvertUtils.register(new BooleanConverter(null), Boolean.class);
 	}
 	public static void setObjectProperty(Object object,String property,Object value){
 		try {
