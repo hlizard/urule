@@ -729,7 +729,7 @@ public class RepositoryServiceImpl extends BaseRepositoryService implements Repo
 	public void saveFile(String path, String content,boolean newVersion,String versionComment,User user) throws Exception{
 		//System.out.println("saveFile:"+path+", "+content+", "+newVersion+", "+versionComment+", "+user);
 
-		Scriptable scope = init(true);
+		/*Scriptable scope = init(true);
 		String f = "jslib/diff/urule.js";
 		FileReader in = null;
 		in = new FileReader(dir+f);
@@ -748,7 +748,7 @@ public class RepositoryServiceImpl extends BaseRepositoryService implements Repo
 				content = resultStr;
 			else
 				System.out.println("使用prettydiff格式化xml失败!");
-		}
+		}*/
 
 		path=Utils.decodeURL(path); 
 		System.out.println("saveFile:"+path);

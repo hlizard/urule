@@ -22,6 +22,7 @@ export default class SourceDialog extends Component{
             lineNumbers:true
         });
         event.eventEmitter.on(event.OPEN_SOURCE_DIALOG,(file,content)=>{
+            content = window.urule_format(content, 'dom');
             $(ReactDOM.findDOMNode(this)).modal('show');
             this.setState({file,codeMirror,title:`[${file}]源码`});
             setTimeout(function () {

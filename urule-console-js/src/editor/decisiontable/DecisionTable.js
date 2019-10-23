@@ -183,7 +183,8 @@ window._setDirty=function(){
 			if($("#saveButton").hasClass("disabled")){
 				return false;
 			}
-			const file=getParameter('file'),xml=self.toXml();
+			const file=getParameter('file');var xml=self.toXml();
+            xml = window.urule_format(xml, 'dom');
 			let postData={content:xml,file,newVersion};
 			const url=window._server+'/common/saveFile';
 			if(newVersion){

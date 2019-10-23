@@ -78,6 +78,7 @@ export function saveData(data,newVersion,file) {
         return;
     }
     xml+='</action-library>';
+    xml = window.urule_format(xml, 'dom');
     let postData={content:xml,file,newVersion};
     const url=window._server+'/common/saveFile';
     if(newVersion){

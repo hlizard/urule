@@ -143,7 +143,8 @@ window._setDirty=function(){
 			if(newVersion){
 				versionComment=prompt("请输入新版本描述.");
 			}
-			const file=getParameter('file'),xml=self.toXml();
+			const file=getParameter('file');var xml=self.toXml();
+			xml = window.urule_format(xml, 'dom');
 			let postData={content:xml,file,newVersion};
 			const url=window._server+'/common/saveFile';
 			if(newVersion){

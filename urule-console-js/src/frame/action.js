@@ -361,6 +361,132 @@ function buildData(data,level) {
                     }
                 },
                 {
+                    name:'导出项目备份(xml source zip)',
+                    icon:'rf rf-export',
+                    click:function(t,e){bootbox.confirm("真的要导出项目"+t.name+"的xml源码备份文件吗？",function(e){
+                          	"use strict";
+                              if(e){
+                          //        var n=window._server+"/frame/exportProjectBackupFile?path="+encodeURI(encodeURI(t.fullPath));
+                          //        window.open(n,"_blank")
+                                  var tape = new Tar(),
+                                      out,
+                                      url,
+                                      base64;
+
+                                  function uint8ToString(buf) {
+                                      var i, length, out = '';
+                                      for (i = 0, length = buf.length; i < length; i += 1) {
+                                          out += String.fromCharCode(buf[i]);
+                                      }
+
+                                      return out;
+                                  }
+
+                                  function stringToUint8 (input) {
+                                      var out = new Uint8Array(input.length), i;
+
+                                      for (i = 0; i < input.length; i += 1) {
+                                          out[i] = input.charCodeAt(i);
+                                      }
+
+                                      return out;
+                                  }
+
+
+                          //        out = tape.append('output.txt', 'This is test1!');
+                          //        out = tape.append('dir/out.txt', 'This is test2! I changed up the directory');
+                          //        out = tape.append('arr.txt', stringToUint8('This is a Uint8Array!'));
+
+                                  $.ajaxSetup({
+
+                                      cache : false,
+
+                                      async : false   //否则无法都出全部
+
+                                  });
+                                  $.ajax({url: window._server+"/frame/loadProjects", type: "POST", dataType: "json", data: {"classify":false,"projectName":"","types":""}, success: function(d){
+                                      //var d = JSON.parse(dstr);
+                                      var ddict = {};
+                                      var z = new ZipArchive;
+
+                                      /*let prettydiff = window.prettydiff,
+                                          options = prettydiff.options,
+                                          output = "";
+                                      options.api = "dom";
+                                      options.language = "auto";
+                                      options.lexer = "markup";
+                                      options.mode = "beautify";
+                                      options.attribute_sort = true;
+                                      //options.indent_size = 2;*/
+
+                                      console.log('正在导出项目'+d.repo.rootFile.children[0].name+', 请耐心等待...');
+                                      var processANode = function(res){
+                                          if(res.type=='all' || res.type=='folder'){
+                                              if (res.children) {  //可能是空文件夹
+                                                  for (var i=0;i<res.children.length;i++){
+                                                      processANode(res.children[i]);
+                                                  }
+                                              }
+                                          } else {
+                                              $.post(window._server+"/frame/fileSource", {"path":res.fullPath}, function(dd){
+                                                  console.log('正在导出'+res.type+"文件"+res.name+'...');
+                          //                        options.source = dd.content;
+                          //                        var xml_content = prettydiff(options);
+                                                  var xml_content = urule_format(dd.content, 'dom');
+                                                  z.addFile(res.fullPath, xml_content);
+                                                  //out = tape.append(res.fullPath, dd.content);
+                                                  //ddict[res.fullPath] = dd.content;
+
+                                                  //if(Object.keys(ddict).length == 10) {
+                                              });
+                                          }
+                                      };
+                                      processANode(d.repo.rootFile.children[0].children[1]);
+
+                                      var dstr = JSON.stringify(d, null, 4);
+                                      //out = tape.append(d.repo.rootFile.children[0].name+'_集中展示.json', dstr);
+                                      //for (var property1 in ddict) {
+                                      //  z.addFile(property1, ddict[property1]);
+                                      //}
+                                      z.addFile(d.repo.rootFile.children[0].name+'_集中展示.json', dstr);
+                                      z.export(d.repo.rootFile.children[0].name+'-'+new Date().Format("yyyyMMddhhmmss"));
+                                      // 再将.xz备份也一并导出(.zip备份不包含知识包部分)
+                                      var n=window._server+"/frame/exportProjectBackupFile?path="+encodeURI(encodeURI(t.fullPath));window.open(n,"_blank")
+                                      return;
+
+                                      var compression_mode = 1,
+                                          my_lzma = new LZMA(window._server.replace("/urule","")+"/jslib/lzma_worker.js");
+
+                                      var tarstr = uint8ToString(out);
+                                      my_lzma.compress(out, compression_mode, function on_compress_complete(result) {
+                                              //alert("Compressed: " + result);
+
+                                              var a = document.createElement('a');
+                                              //var t = new Blob([result], {type : 'application/x-7z-compressed'});
+                                              //a.href=URL.createObjectURL(t)
+                                              //a.download=d.repo.rootFile.children[0].name+".tar.7z";
+                                              var t = new Blob([tarstr], {type : 'application/tar'});
+                                              a.href=URL.createObjectURL(t)
+                                              a.download=d.repo.rootFile.children[0].name+".tar"; //中文乱码,
+                                              a.click();
+
+                                              base64 = btoa(result);
+
+                                              url = "data:application/x-7z-compressed;base64," + base64;  //有大小限制
+                                              window.open(url);
+                                          });
+                                  }});
+                              }
+                          })}
+                },
+                {
+                    name:'更新项目(xml source zip)',
+                    icon:'rf rf-import',
+                    click:function(t){
+                              location.href = window._server.replace("/urule","")+"/jslib/demo2.html";
+                          }
+                },
+                {
                     name:'修改项目名称',
                     icon:'rf rf-rename',
                     click:function (data) {
@@ -997,7 +1123,8 @@ export function unlockFile(file,dispatch){
     });
 };
 
-export function saveFileSource(file,content){
+export function saveFileSource(file,rcontent){
+    const content = window.urule_format(rcontent, 'dom');
     var url=window._server+"/common/saveFile";
     $.ajax({
         url,

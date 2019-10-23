@@ -33,12 +33,13 @@ $(document).ready(function(){
         tip:'保存',
         click:function(){
             event.eventEmitter.emit(event.SHOW_LOADING,"数据保存中");
-            const content=designer.toXML();
+            var content=designer.toXML();
             if(!content){
                 event.eventEmitter.emit(event.HIDE_LOADING);
                 return;
             }
 
+            content = window.urule_format(content, 'dom');
             let postData={content,file,newVersion:false};
             const url=window._server+'/common/saveFile';
             ajaxSave(url,postData,function () {
@@ -52,12 +53,13 @@ $(document).ready(function(){
         tip:'保存为新版本',
         click:function(){
             event.eventEmitter.emit(event.SHOW_LOADING,"数据保存中");
-            const content=designer.toXML();
+            var content=designer.toXML();
             if(!content){
                 event.eventEmitter.emit(event.HIDE_LOADING);
                 return;
             }
 
+            content = window.urule_format(content, 'dom');
             let postData={content,file,newVersion:true};
             const url=window._server+'/common/saveFile';
             bootbox.prompt("请输入新版本描述.",function (versionComment) {
