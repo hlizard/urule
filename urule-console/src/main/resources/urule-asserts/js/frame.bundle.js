@@ -55,7 +55,7 @@ I.unbind("touchmove"),I.unbind("touchend"),I.unbind("touchleave"),I.unbind("touc
             var ddict = {};
             var z = new ZipArchive;
 
-            let prettydiff = window.prettydiff,
+            /*let prettydiff = window.prettydiff,
                 options = prettydiff.options,
                 output = "";
             options.api = "dom";
@@ -63,7 +63,7 @@ I.unbind("touchmove"),I.unbind("touchend"),I.unbind("touchleave"),I.unbind("touc
             options.lexer = "markup";
             options.mode = "beautify";
             options.attribute_sort = true;
-            //options.indent_size = 2;
+            //options.indent_size = 2;*/
 
             console.log('正在导出项目'+d.repo.rootFile.children[0].name+', 请耐心等待...');
             var processANode = function(res){
@@ -76,8 +76,9 @@ I.unbind("touchmove"),I.unbind("touchend"),I.unbind("touchleave"),I.unbind("touc
                 } else {
                     $.post(window._server+"/frame/fileSource", {"path":res.fullPath}, function(dd){
                         console.log('正在导出'+res.type+"文件"+res.name+'...');
-                        options.source = dd.content;
-                        var xml_content = prettydiff(options);
+//                        options.source = dd.content;
+//                        var xml_content = prettydiff(options);
+                        var xml_content = urule_format(dd.content, 'dom');
                         z.addFile(res.fullPath, xml_content);
                         //out = tape.append(res.fullPath, dd.content);
                         //ddict[res.fullPath] = dd.content;

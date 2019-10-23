@@ -15,9 +15,7 @@
  ******************************************************************************/
 package com.bstek.urule.console.repository;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,6 +29,7 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.lock.Lock;
 import javax.jcr.nodetype.NodeType;
+import javax.servlet.ServletContext;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -39,6 +38,13 @@ import org.apache.jackrabbit.value.DateValue;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.tools.shell.Global;
+import org.mozilla.javascript.tools.shell.Main;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContextAware;
 
 import com.bstek.urule.RuleException;
@@ -59,6 +65,87 @@ import com.bstek.urule.console.servlet.permission.UserPermission;
  */
 public class RepositoryServiceImpl extends BaseRepositoryService implements RepositoryService, ApplicationContextAware {
 	private PermissionService permissionService;
+
+	private Context cx;
+	//private Global scope;
+	private static ScriptableObject sharedScope;
+	private Scriptable prevScope;
+	//	static URL  dir;
+//	static {
+//        dir = IfAssertor.class.getResource("/");
+//	}
+	@Autowired
+	private ServletContext servletContext;
+	static String  dir;
+	private static ThreadLocal<Context> jscontextHolder = new ThreadLocal<Context>();
+
+	private Scriptable init(boolean usePrevScope) {
+		if (dir==null)
+			dir = servletContext.getRealPath(File.separator)+File.separator;
+
+		cx = jscontextHolder.get();
+		if(true) {	//if(cx == null) {
+			finalize( );
+			console.println("new cx!");
+			cx = Context.enter();
+			cx.setOptimizationLevel(-1);
+			cx.setLanguageVersion(200);	//即VERSION_ES6
+
+			if (sharedScope == null) {
+//	        	sharedScope = cx.initStandardObjects();
+//	        	//sharedScope = cx.initStandardObjects(null, true);	//密封所有标准库对象
+				//使用cx.initStandardObjects();会出现org.mozilla.javascript.EcmaError: ReferenceError: "print" is not defined. (file:/E:/MyCode/workspace-sts-3.9.5.RELEASE/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/morpho/WEB-INF/classes/envjs/env.rhino.js#1856)
+				sharedScope = new Global(cx);
+			}
+			try {
+				Main.processFile(cx, sharedScope, dir + "envjs/env.rhino.js");	//Caused by: java.lang.StackOverflowError
+				Main.processFile(cx, sharedScope, dir + "jslib/diff/js/prettydiff.js");
+//				Main.processFile(cx, sharedScope, dir + "jslib/diff/js/browser.js");
+//				Main.processFile(cx, sharedScope, dir + "jslib/diff/urule.js");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+//			cx.evaluateString(sharedScope, "var _s_obj = {};", "js_sharedScope_init", 1, null);	//_s_obj将用于跨表达式传值
+//			// Force the LiveConnect stuff to be loaded.
+//			String loadMe = "RegExp; getClass; java; Packages; JavaAdapter;";
+//			cx.evaluateString(sharedScope , loadMe, "lazyLoad", 0, null);
+//	        sharedScope.sealObject();	//密封共享范围本身
+			//org.mozilla.javascript.EvaluatorException: Cannot modify a property of a sealed object: Envjs. (file:/E:/MyCode/WJRE/morpho/target/classes/envjs/env.rhino.js#8)
+
+			jscontextHolder.set(cx);
+			String rhinoVersion = cx.getImplementationVersion();
+			console.println("rhinoVersion:"+rhinoVersion);
+		}
+//		if(scope == null) {
+//	        scope = new Global(cx);
+//		}
+		if(usePrevScope && prevScope!=null) {
+			Scriptable _prevScope = prevScope;
+			prevScope = null;	//只允许重用一次，避免滥用
+			return _prevScope;
+		}
+		Scriptable newScope = cx.newObject(sharedScope);
+		newScope.setPrototype(sharedScope);
+		newScope.setParentScope(null);
+		prevScope = newScope;
+		return newScope;
+	}
+
+	protected void finalize( )
+	{
+		if (cx!=null) {
+			cx.exit();
+		}
+	}
+
+	public PrintStream console;
+	public PrintStream console_err;
+
+	public RepositoryServiceImpl() {
+		console = System.out;
+		console_err = System.err;
+	}
 	
 	@Override
 	public List<UserPermission> loadResourceSecurityConfigs(String companyId) throws Exception{
@@ -641,6 +728,28 @@ public class RepositoryServiceImpl extends BaseRepositoryService implements Repo
 	@Override
 	public void saveFile(String path, String content,boolean newVersion,String versionComment,User user) throws Exception{
 		//System.out.println("saveFile:"+path+", "+content+", "+newVersion+", "+versionComment+", "+user);
+
+		Scriptable scope = init(true);
+		String f = "jslib/diff/urule.js";
+		FileReader in = null;
+		in = new FileReader(dir+f);
+		cx.evaluateReader(scope, in, f, 1, null);
+		Object functionObject = scope.get("urule_format" , scope);
+		if (!(functionObject instanceof Function)) {
+//			System.out.println("urule_format is undefined or not a function.");
+			throw new NoSuchMethodException("urule_format is undefined or not a function.");
+		} else {
+			Object testArgs[] = {content, "node"};
+			Function test = (Function)functionObject;
+			Object result = test.call(cx, scope, scope, testArgs);
+//			System.out.println(Context.toString(result));
+			String resultStr = Context.toString(result);
+			if(!"${sparser.options.source}".equals(resultStr))
+				content = resultStr;
+			else
+				System.out.println("使用prettydiff格式化xml失败!");
+		}
+
 		path=Utils.decodeURL(path); 
 		System.out.println("saveFile:"+path);
 		if(path.indexOf(RES_PACKGE_FILE)>-1){
