@@ -63,6 +63,7 @@ I.unbind("touchmove"),I.unbind("touchend"),I.unbind("touchleave"),I.unbind("touc
             options.lexer = "markup";
             options.mode = "beautify";
             options.attribute_sort = true;
+            //options.indent_size = 2;
 
             console.log('正在导出项目'+d.repo.rootFile.children[0].name+', 请耐心等待...');
             var processANode = function(res){
@@ -93,7 +94,9 @@ I.unbind("touchmove"),I.unbind("touchend"),I.unbind("touchleave"),I.unbind("touc
             //  z.addFile(property1, ddict[property1]);
             //}
             z.addFile(d.repo.rootFile.children[0].name+'_集中展示.json', dstr);
-            z.export(d.repo.rootFile.children[0].name);
+            z.export(d.repo.rootFile.children[0].name+'-'+new Date().Format("yyyyMMddhhmmss"));
+            // 再将.xz备份也一并导出(.zip备份不包含知识包部分)
+            var n=window._server+"/frame/exportProjectBackupFile?path="+encodeURI(encodeURI(t.fullPath));window.open(n,"_blank")
             return;
 
             var compression_mode = 1,
