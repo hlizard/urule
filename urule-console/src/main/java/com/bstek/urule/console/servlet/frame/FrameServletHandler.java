@@ -159,7 +159,7 @@ public class FrameServletHandler extends RenderPageServletHandler{
 			}else if(name.equals("file")){
 				inputStream=item.getInputStream();
 				archiveName = ((DiskFileItem)item).getName();
-				if(archiveName!=null)
+				if(archiveName!=null&&archiveName.lastIndexOf('.')>=0)	//Content-Disposition: form-data; name="file"; filename="blob"
 					fileType = archiveName.substring(archiveName.lastIndexOf('.'));
 			}else if(name.equals("fileType")) {
 				fileType = new String(item.get());
