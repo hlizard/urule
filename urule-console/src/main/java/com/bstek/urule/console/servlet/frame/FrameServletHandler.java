@@ -15,13 +15,7 @@
  ******************************************************************************/
 package com.bstek.urule.console.servlet.frame;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,10 +28,16 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorOutputStream;
+import org.apache.commons.compress.utils.SeekableInMemoryByteChannel;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
@@ -61,6 +61,7 @@ import com.bstek.urule.console.repository.model.Type;
 import com.bstek.urule.console.repository.model.VersionFile;
 import com.bstek.urule.console.servlet.RenderPageServletHandler;
 import com.bstek.urule.console.servlet.RequestContext;
+import org.tukaani.xz.XZFormatException;
 
 /**
  * @author Jacky.gao
@@ -118,6 +119,23 @@ public class FrameServletHandler extends RenderPageServletHandler{
 		result.put("content", xml);
 		writeObjectToJson(resp, result);
 	}
+
+	/** 根据InputStream对应的字节数组读取InputStream长度，会将InputStream指针移动至InputStream尾，不利于后续读取，readInputStream(inputStream).length等同于inputStream.readAllBytes().length，readAllBytes从当前指针位置读取，读取后指针留在最后的位置 */
+
+	public byte[] readInputStream(InputStream inputStream) {
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+		int length;
+		try {
+			while ((length = inputStream.read(buffer)) != -1) {
+				outStream.write(buffer, 0, length);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return outStream.toByteArray();
+	}
 	
 	public void importProject(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 		DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -132,6 +150,7 @@ public class FrameServletHandler extends RenderPageServletHandler{
 		if(items.size()==0){
 			throw new ServletException("Upload file is invalid.");
 		}
+		String archiveName = null;
 		for(FileItem item:items){
 			String name=item.getFieldName();
 			if(name.equals("overwriteProject")){
@@ -139,18 +158,48 @@ public class FrameServletHandler extends RenderPageServletHandler{
 				overwriteProject=Boolean.valueOf(overwriteProjectStr);
 			}else if(name.equals("file")){
 				inputStream=item.getInputStream();
+				archiveName = ((DiskFileItem)item).getName();
+				if(archiveName!=null)
+					fileType = archiveName.substring(archiveName.lastIndexOf('.'));
 			}else if(name.equals("fileType")) {
 				fileType = new String(item.get());
 			}
 		}
-		if(fileType!=null) {
-			CompressorInputStream cin = null;
+		if(fileType!=null&&!".bak".equals(fileType)) {
+			InputStream cin = null;
 			switch(fileType) {
 				case ".xz":
 					cin = new XZCompressorInputStream(inputStream);
 					break;
+				case ".zip":
 				default:
-					throw new Exception("import "+fileType+" not implemented!");
+//					throw new Exception("import "+fileType+" not implemented!");
+					/*{
+						ZipArchiveInputStream zais = new ZipArchiveInputStream(inputStream, "UTF-8", false, true);
+						//cin = zais;
+						ArchiveEntry archiveEntry = null;
+						//把zip包中的每个文件读取出来
+						//然后把文件写到指定的文件夹
+						while ((archiveEntry = zais.getNextEntry()) != null) {
+							//获取文件名
+							String entryFileName = archiveEntry.getName();
+							byte[] content = new byte[(int) archiveEntry.getSize()];
+							zais.read(content);
+							if (entryFileName.endsWith(".xz")) {
+								cin = new ByteArrayInputStream(content);
+								break;
+							}
+						}
+						if (cin == null)
+							throw new Exception("not found .xz file in upload .zip!");
+					}*/
+					{
+						byte[] inputData = readInputStream(inputStream); // zip archive contents
+						SeekableInMemoryByteChannel inMemoryByteChannel = new SeekableInMemoryByteChannel(inputData);
+						ZipFile zipFile = new ZipFile(inMemoryByteChannel, archiveName, "UTF-8", false);
+						ZipArchiveEntry archiveEntry = zipFile.getEntry("wj2.xz");
+						cin = new XZCompressorInputStream(zipFile.getInputStream(archiveEntry));
+					}
 			}
 			repositoryService.importXml(cin,overwriteProject);
 		} else {

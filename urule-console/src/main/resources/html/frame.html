@@ -45,6 +45,16 @@ Date.prototype.Format = function(fmt)
   fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
   return fmt;
 }
+
+//setup ajax
+$.ajaxSetup({
+  beforeSend:function(jqXHR,settings){
+    if (settings.dataType === 'binary'){
+      settings.xhr().responseType='arraybuffer';
+      settings.processData=false;
+    }
+  }
+})
 </script>
 <script src="${contextPath}/jslib/diff/urule.js"></script>
 <script type="text/javascript" src="${contextPath}/urule/res/urule-asserts/js/frame.bundle.js"></script>

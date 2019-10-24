@@ -448,6 +448,20 @@ function buildData(data,level) {
                                           }
                                           delete res.id;   //id每次导出都不同, 干扰版本管理
                                       };
+
+                                      //先导出.bak.xz备份, 并将其添加到zip中
+                                      var n=window._server+"/frame/exportProjectBackupFile?path="+encodeURI(encodeURI(t.fullPath));
+//                                      $.get(n, function(dd){
+//                                          console.log("正在导出.bak.xz备份文件...");
+//                                          z.addFile("wj2.xz", new Blob([dd]));
+//                                      }, "binary")
+//                                      .error(function (jqXHR, textStatus, errorThrown) {
+//                                          console.log(textStatus, errorThrown);
+//                                          z = null;
+//                                          alert("导出.bak.xz备份文件失败, 终止执行!");
+//                                      });
+//                                      if(!z) return;
+
                                       processANode(d.repo.rootFile.children[0].children[1]);
 
                                       //知识包文件名比较特别, 是RepositoryServiceImpl.RES_PACKGE_FILE中定义的, 类似的还有RepositoryServiceImpl.CLIENT_CONFIG_FILE等
@@ -478,9 +492,31 @@ function buildData(data,level) {
                                       //  z.addFile(property1, ddict[property1]);
                                       //}
                                       z.addFile(d.repo.rootFile.children[0].name+'_集中展示.json', dstr);
+
+                                      //导出.bak.xz备份, 并将其添加到zip中
+                                      var oReq = new XMLHttpRequest();
+                                      oReq.responseType = "arraybuffer";
+
+                                      oReq.onload = function(oEvent) {
+                                        var arrayBuffer = oReq.response;
+
+                                        // if you want to access the bytes:
+                                        //var byteArray = new Uint8Array(arrayBuffer);
+                                        // ...
+
+                                        // If you want to use the image in your DOM:
+                                        var blob = new Blob([arrayBuffer], {type: "application/x-xz"});
+                                        z.addFile("wj2.xz", blob);
+
+                                        // whatever...
                                       z.export(d.repo.rootFile.children[0].name+'-'+new Date().Format("yyyyMMddhhmmss"));
-                                      // 再将.xz备份也一并导出(.zip备份不包含知识包部分)
-                                      var n=window._server+"/frame/exportProjectBackupFile?path="+encodeURI(encodeURI(t.fullPath));window.open(n,"_blank")
+//                                      // 再将.xz备份也一并导出(.zip备份不包含知识包部分)
+//                                      var n=window._server+"/frame/exportProjectBackupFile?path="+encodeURI(encodeURI(t.fullPath));window.open(n,"_blank")
+                                      };
+
+                                      oReq.open("GET", n, true);	//同步方式不能指定responseType, 不行, 只能异步, 异步就只能放最后了
+                                      oReq.send();
+                                      if(!z) return;
                                       return;
 
                                       var compression_mode = 1,
