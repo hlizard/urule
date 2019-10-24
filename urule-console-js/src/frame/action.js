@@ -428,7 +428,7 @@ function buildData(data,level) {
                                                   }
                                               }
                                           } else {
-                                              $.post(window._server+"/frame/fileSource", {"path":res.fullPath}, function(dd){
+                                              var downloadSource = function(){return $.post(window._server+"/frame/fileSource", {"path":res.fullPath}, function(dd){
                                                   console.log('正在导出'+res.type+"文件"+res.name+'...');
                           //                        options.source = dd.content;
                           //                        var xml_content = prettydiff(options);
@@ -438,6 +438,12 @@ function buildData(data,level) {
                                                   //ddict[res.fullPath] = dd.content;
 
                                                   //if(Object.keys(ddict).length == 10) {
+                                              })};
+                                              var jqxhr = downloadSource().error(function (){
+                                                  downloadSource().error(function (){
+                                                      z = null;
+                                                      alert("导出文件"+res.name+"失败, 终止执行!");
+                                                  });
                                               });
                                           }
                                       };
