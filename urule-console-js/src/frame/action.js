@@ -446,8 +446,31 @@ function buildData(data,level) {
                                                   });
                                               });
                                           }
+                                          delete res.id;   //id每次导出都不同, 干扰版本管理
                                       };
                                       processANode(d.repo.rootFile.children[0].children[1]);
+
+                                      //知识包文件名比较特别, 是RepositoryServiceImpl.RES_PACKGE_FILE中定义的, 类似的还有RepositoryServiceImpl.CLIENT_CONFIG_FILE等
+                                      var respkgpath = d.repo.rootFile.children[0].children[0].fullPath+'/___res__package__file__';
+                                      $.post(window._server+"/frame/fileSource", {"path": respkgpath}, function(dd){
+                                                        console.log("正在导出知识包文件"+respkgpath+'...');
+                                //                        options.source = dd.content;
+                                //                        var xml_content = prettydiff(options);
+                                                        var xml_content = urule_format(dd.content, 'dom');
+                                                        z.addFile(respkgpath, xml_content);
+                                                        //out = tape.append(res.fullPath, dd.content);
+                                                        //ddict[res.fullPath] = dd.content;
+
+                                                        //if(Object.keys(ddict).length == 10) {
+                                                    })
+                                      .error(function (){
+                                          z = null;
+                                          alert("导出知识包文件"+respkgpath+"失败, 终止执行!");
+                                      });
+
+                                      delete d.repo.rootFile.id;
+                                      delete d.repo.rootFile.children[0].id;
+                                      delete d.repo.rootFile.children[0].children[0].id;   //知识包
 
                                       var dstr = JSON.stringify(d, null, 4);
                                       //out = tape.append(d.repo.rootFile.children[0].name+'_集中展示.json', dstr);
@@ -544,6 +567,7 @@ function buildData(data,level) {
         case "resourcePackage":
             data._icon=Styles.frameStyle.getResourcePackageIcon();
             data._style=Styles.frameStyle.getResourcePackageIconStyle();
+            data.contextMenu=buildFileContextMenu();
             data.editorPath="/packageeditor";
             break;
         case "lib":
