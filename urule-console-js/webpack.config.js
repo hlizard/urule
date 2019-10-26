@@ -31,7 +31,11 @@ module.exports = {
                 exclude: /(node_modules|bower_components)/,
                 loader: 'babel',
                 query: {
-                    presets: ['react', 'es2015'],
+                    presets: ["@babel/preset-env", "@babel/preset-react", "mobx"],
+                    "plugins": [
+                        "@babel/plugin-proposal-object-rest-spread",
+                        "@babel/plugin-transform-runtime"
+                    ],
                     compact:true
                 }
             },
@@ -42,6 +46,10 @@ module.exports = {
             {
                 test: /\.(eot|woff|woff2|ttf|svg|png|jpg)$/,
                 loader: 'url-loader?limit=1000000&name=[name]-[hash].[ext]'
+            },
+            {
+                test: /\.json$/,
+                loader: 'json-loader'
             }
         ]
     }
