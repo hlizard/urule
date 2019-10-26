@@ -29,6 +29,9 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.lock.Lock;
 import javax.jcr.nodetype.NodeType;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.io.IOUtils;
@@ -58,6 +61,10 @@ import com.bstek.urule.console.repository.model.Type;
 import com.bstek.urule.console.repository.permission.PermissionService;
 import com.bstek.urule.console.servlet.permission.ProjectConfig;
 import com.bstek.urule.console.servlet.permission.UserPermission;
+
+import com.oracle.avatar.js.Server;
+import com.oracle.avatar.js.Loader;
+import com.oracle.avatar.js.log.Logging;
 
 /**
  * @author Jacky.gao
@@ -724,6 +731,22 @@ public class RepositoryServiceImpl extends BaseRepositoryService implements Repo
 		fileNode.remove();
 		session.save();
 	}
+	
+	String runJs(String content) throws Throwable {
+		if (dir==null)
+			dir = servletContext.getRealPath(File.separator)+File.separator;
+
+	    StringWriter scriptWriter = new StringWriter();
+	    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+	    ScriptContext scriptContext = engine.getContext();
+	    scriptContext.setWriter(scriptWriter);
+//	    scriptContext.setAttribute("xml", content, 1);
+	    Server server = new Server(engine, new Loader.Core(), new Logging(false), System.getProperty("user.dir"));
+	    server.run(dir + "jslib/diff/js/prettydiff.js");
+	    server.run(dir + "jslib/diff/urule.js");
+
+	    return scriptWriter.toString();
+	}
 
 	@Override
 	public void saveFile(String path, String content,boolean newVersion,String versionComment,User user) throws Exception{
@@ -749,6 +772,12 @@ public class RepositoryServiceImpl extends BaseRepositoryService implements Repo
 			else
 				System.out.println("使用prettydiff格式化xml失败!");
 		}*/
+		try {
+			content = runJs(content);
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		path=Utils.decodeURL(path); 
 		System.out.println("saveFile:"+path);

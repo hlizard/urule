@@ -123,7 +123,41 @@
           <version>1.7.11</version>
       </dependency>
 	  <!-- commons-compress结束 -->
+	  
+    <dependency>
+        <groupId>com.oracle</groupId>
+        <artifactId>avatar-js</artifactId>
+        <version>0.10.32-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+        <groupId>com.oracle</groupId>
+        <artifactId>libavatar-js-linux-x64</artifactId>
+        <version>0.10.32-SNAPSHOT</version>
+        <type>pom</type>
+    </dependency>
+
+    <dependency>
+        <groupId>com.oracle</groupId>
+        <artifactId>libavatar-js-macosx-x64</artifactId>
+        <version>0.10.32-SNAPSHOT</version>
+        <type>pom</type>
+    </dependency>
+
+    <dependency>
+        <groupId>com.oracle</groupId>
+        <artifactId>libavatar-js-win-x64</artifactId>
+        <version>0.10.32-SNAPSHOT</version>
+        <type>pom</type>
+    </dependency>
   </dependencies>
+  <repositories>
+    <repository>
+        <id>nexus-snapshots</id>
+        <name>Nexus Snapshots</name>
+        <url>https://maven.java.net/content/repositories/snapshots/</url>
+    </repository>
+</repositories>
 	<licenses>
 		<license>
 			<name>The Apache License, Version 2.0</name>
