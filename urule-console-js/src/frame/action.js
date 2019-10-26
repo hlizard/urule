@@ -482,18 +482,19 @@ function buildData(data,level) {
                                     	  });
                                       }
                                       const result = await fn();*/
-                                      const data = (async ()=>{
-                                    	  try {
-                                    	    let res = await fetch(n, {mode: 'no-cors'});//等待fetch被resolve()后才能继续执行
-                                    	    console.log(res);//fetch正常返回后才执行
-                                    	    return res;//这样就能返回res不用担心异步的问题啦啦啦
-                                    	  } catch(e) {
-                                    		z = null;
-                                    	    console.log(e);
-                                    	  }
-                                    	})().blob();
-                                      if(!z) return;
-                                      z.addFile("wj2.xz", data);
+                              (async ()=>{	//Can not use keyword 'await' outside an async function  //https://stackoverflow.com/questions/39679505/using-await-outside-of-an-async-function
+                            	  try {
+	                            	  let res = await fetch(n, {mode: 'no-cors'});//等待fetch被resolve()后才能继续执行
+	                            	  console.log(res);//fetch正常返回后才执行
+	                            	  if(res.ok){
+	                            		  console.log("正在导出.bak.xz备份文件...");
+	                            		  const data = await res.blob();
+	                            		  z.addFile("wj2.xz", data);
+	                            	  } else {
+	                            	      z = null;
+	                            	      alert("导出.bak.xz备份文件失败, 终止执行!");
+	                            	      if(!z) return;
+	                            	  }
 
                                       processANode(d.repo.rootFile.children[0].children[1]);
 
@@ -550,6 +551,12 @@ function buildData(data,level) {
                                       oReq.open("GET", n, true);	//同步方式不能指定responseType, 不行, 只能异步, 异步就只能放最后了
                                       oReq.send();
                                       if(!z) return;*/
+                                      z.export(d.repo.rootFile.children[0].name+'-'+new Date().Format("yyyyMMddhhmmss"));
+                            	  } catch(e) {
+	                            		z = null;
+	                            	    console.log(e);
+	                            	  }
+                              })();
                                       return;
 
                                       var compression_mode = 1,
