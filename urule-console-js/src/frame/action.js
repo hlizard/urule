@@ -461,6 +461,39 @@ function buildData(data,level) {
 //                                          alert("导出.bak.xz备份文件失败, 终止执行!");
 //                                      });
 //                                      if(!z) return;
+                                      /*async function fn() {
+                                    	  let result = fetch(n)
+                                    	  .then(response => {
+                                    		  if (response.ok) {
+                                		        return response.blob();
+                                		      } else {
+                                		          // Find some way to get to execute .catch()
+                                		    	  throw new Error(response.status+": "+response.statusText);
+                                		    	  //return Promise.reject('something went wrong!')
+                                		      }
+                                    	  })
+                                    	  .then(data => {
+                                    		  z.addFile("wj2.xz", data);
+                                    	  })
+                                    	  .catch(error => {
+                                    		  console.log('error is', error);
+                                              z = null;
+                                              alert("导出.bak.xz备份文件失败, 终止执行!");
+                                    	  });
+                                      }
+                                      const result = await fn();*/
+                                      const data = (async ()=>{
+                                    	  try {
+                                    	    let res = await fetch(n, {mode: 'no-cors'});//等待fetch被resolve()后才能继续执行
+                                    	    console.log(res);//fetch正常返回后才执行
+                                    	    return res;//这样就能返回res不用担心异步的问题啦啦啦
+                                    	  } catch(e) {
+                                    		z = null;
+                                    	    console.log(e);
+                                    	  }
+                                    	})().blob();
+                                      if(!z) return;
+                                      z.addFile("wj2.xz", data);
 
                                       processANode(d.repo.rootFile.children[0].children[1]);
 
@@ -493,7 +526,7 @@ function buildData(data,level) {
                                       //}
                                       z.addFile(d.repo.rootFile.children[0].name+'_集中展示.json', dstr);
 
-                                      //导出.bak.xz备份, 并将其添加到zip中
+                                      /*//导出.bak.xz备份, 并将其添加到zip中
                                       var oReq = new XMLHttpRequest();
                                       oReq.responseType = "arraybuffer";
 
@@ -516,7 +549,7 @@ function buildData(data,level) {
 
                                       oReq.open("GET", n, true);	//同步方式不能指定responseType, 不行, 只能异步, 异步就只能放最后了
                                       oReq.send();
-                                      if(!z) return;
+                                      if(!z) return;*/
                                       return;
 
                                       var compression_mode = 1,
