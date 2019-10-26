@@ -46,6 +46,10 @@ module.exports = {
             {
                 test: /\.(eot|woff|woff2|ttf|svg|png|jpg)$/,
                 loader: 'url-loader?limit=1000000&name=[name]-[hash].[ext]'
+            },
+            {
+                test: /\.json$/,
+                loader: 'json-loader'
             }
         ]
     }
